@@ -11,7 +11,7 @@ Live: https://hd-showcase.martin-b1c.workers.dev (Cloudflare account of martin@h
 | URL | File | Who uses it |
 |---|---|---|
 | `/` | `public/index.html` | Audience phones (QR target) |
-| `/deck` | `public/deck.html` | Projector. 30 steps + HUD |
+| `/deck` | `public/deck.html` | Projector. 31 steps + HUD |
 | `/remote` | `public/remote.html` | Presenter's phone or second tab: Next/Back, question/vote/stopwatch buttons, speech per step |
 | `/guide` | `public/guide.html` | Run sheet: every screen, what to press, what to say. Public and `noindex`, so it must never contain quiz answers |
 | `/deck?demo` | same | Rehearsal with simulated players; nothing reaches the server or phones |
@@ -44,7 +44,7 @@ We deliberately do **not** ask for hours saved (people feel busier, not freer). 
 - Mission 1, "Which manual work don't you miss?": tick tasks in any department, +200 once.
   Each tick counts **1** server-side whatever the phone sends. `hours.perWeek` in the API is
   the count of tasks retired (legacy field name). A task mentioning "sheet" → Spreadsheet Slayer.
-- Mission 2, Tool of the year: one of 8 tools, +100 once.
+- Mission 2, Tool of the year: multi-select among 8 tools, +100 once. The deck shows % of voters per tool.
 - 4 live guesses: commits 1,798 · Lead Center leads 67,300 · AI DEV PRs 897 · AI Writer
   commits 155. Score `max(0, round(500 × (1 − |guess − actual| / actual)))`, paid once on
   reveal. Closest → Oracle; all four answered → Full Run.
@@ -56,7 +56,7 @@ dashboard-2-frontend and hd-agent-service; Blin's HenneHuddle deck for Lead Cent
 ## Things that must stay in sync
 
 - **Run of show**: `STEPS` in `public/deck.html` and `STEPS` / `SAY` / `JUMPS` in
-  `public/remote.html` are index-aligned (30 steps). Adding or moving a step means updating
+  `public/remote.html` are index-aligned (31 steps; step 2 "Missions results" reuses the Pain removed screen live at level 1). Adding or moving a step means updating
   both, plus the step numbers in `public/guide.html`.
 - **Questions**: `QUESTIONS` in `src/config.js` (ids + answers), the `QUESTIONS` array in
   `deck.html` (text + answer for the reveal animation) and the `QUESTIONS` map in

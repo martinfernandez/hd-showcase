@@ -51,6 +51,8 @@ function timingSafeEqual(a, b) {
 
 // A player's AI Dev vote: a list of options (older saves hold a single string).
 const votesOf = (p) => (Array.isArray(p.vote) ? p.vote : p.vote ? [p.vote] : []);
+// Tool of the year picks: a list (older saves hold a single string).
+const toolsOf = (p) => (Array.isArray(p.tool) ? p.tool : p.tool ? [p.tool] : []);
 
 const award = (p, badge) => {
   if (!p.badges.includes(badge)) p.badges.push(badge);
@@ -146,11 +148,11 @@ export class Room extends DurableObject {
     );
 
     const toolCounts = Object.fromEntries(TOOL_IDS.map((k) => [k, 0]));
-    for (const p of players) if (p.tool) toolCounts[p.tool] += 1;
+    for (const p of players) for (const t of toolsOf(p)) toolCounts[t] += 1;
 
     return {
       epoch: s.epoch,
-      tools: { counts: toolCounts, total: players.filter((p) => p.tool).length },
+      tools: { counts: toolCounts, total: players.filter((p) => toolsOf(p).length).length },
       level: s.level,
       hours: { participants, perWeek, perYear, fte: perYear / FTE_HOURS, byTask, bySector },
       vote: { open: s.vote.open, counts, total: players.filter((p) => votesOf(p).length).length },
@@ -332,10 +334,15 @@ export class Room extends DurableObject {
       case "/api/tool": {
         const p = this.player(body, true);
         if (!p) error = "join first";
-        else if (!TOOL_IDS.includes(body.tool)) error = "unknown tool";
         else {
-          if (!p.tool) p.points += POINTS.tool;
-          p.tool = body.tool;
+          // {tools: [...]} (multi-select); the old {tool} shape still works.
+          const picked = Array.isArray(body.tools) ? body.tools : [body.tool];
+          const tools = [...new Set(picked.filter((t) => TOOL_IDS.includes(t)))];
+          if (!tools.length) error = "pick at least one tool";
+          else {
+            if (!toolsOf(p).length) p.points += POINTS.tool;
+            p.tool = tools;
+          }
         }
         break;
       }

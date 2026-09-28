@@ -84,7 +84,7 @@
 <script>
 // Mirrors the deck's run of show (public/deck.html STEPS).
 const STEPS = [
-  ["Title", "s1", 1], ["L1 map", "s2", 1], ["L1 intro", "s3", 1], ["L1 power-ups", "s4", 1],
+  ["Title", "s1", 1], ["Missions results", "s8", 1], ["L1 map", "s2", 1], ["L1 intro", "s3", 1], ["L1 power-ups", "s4", 1],
   ["Q1 commits", "q", 1, "commits"], ["Q1 reveal", "rv", 1, "commits"],
   ["L2 map", "s2", 2], ["L2 intro", "s3", 2], ["L2 power-ups", "s4", 2],
   ["L3 map", "s2", 3], ["L3 intro", "s3", 3], ["L3 power-ups", "s4", 3],
@@ -98,26 +98,27 @@ const STEPS = [
 const WHO = { 1: "Taulant", 2: "Abenezer", 3: "Hikmat", 4: "Roma & Blin", 5: "Martin", 6: "Martin" };
 const SAY = {
   0: "This year the Systems team shipped hundreds of features. Instead of slides, we made it a game. Scan the QR now: joining gets you 100 points and the first ten get a badge. Then do the two missions: tick the manual work you don't do anymore, and vote for your tool of the year.",
-  1: "Five presenters, five levels. Every level unlocks power-ups: the tools we built. The bar at the bottom counts the manual tasks you just told us you retired.",
-  2: "Level one: goodbye, spreadsheets.", 3: "Digital PR tracking, Brand Profiles, Review Removal and the Recipe Card agent replaced the sheets and docs we used to live in.",
-  4: "First question: how many commits did Systems push this year? Closest guess wins up to 500 points. You have 30 seconds.",
-  5: "Read the number and the podium out loud. The closest guess takes the Oracle badge.",
-  6: "Level two: monitoring nobody has to do.", 7: "Abenezer takes over.", 8: "The GBP monitor checks every listing and an AI filter drops the noise. Backlink gaps and Query Fan-Out turn hours of research into a button.",
-  9: "Level three: the client, in numbers.", 10: "Hikmat takes over.", 11: "Leads by channel, CRM leads, cost per lead and sentiment in one view, and the Lead Center Blin built, where every number clicks through to the leads.",
-  12: "How many real leads does the Lead Center track? Guess on your phone.", 13: "Read the number. Thousands of them became signed clients, all traceable to the lead.",
-  14: "This is where it shows up for clients: faster answers and faster fixes. The amber boxes are numbers we're still measuring.",
-  15: "Level four is the legendary one.", 16: "Roma and Blin take over.", 17: "The one legendary drop this year: AI Dev. A Slack message goes in, a pull request comes out, and you pick the change.",
-  18: "Vote now. [Close the vote] The room picked this one. Roma, send it. [Start] The clock is running. [Stop] Pull request open.",
-  19: "Last question: how many pull requests did AI DEV open from September 9 to 27?", 20: "Read the number: across 136 client repos, in under three weeks.",
-  21: "Level five: AI Writer and the boss fight.", 22: "Martin takes over.", 23: "AI Writer: drafts that know each client, checked against their Brand Profile before anyone sees them.",
-  24: "Question four: how many commits went into the AI Writer this year?",
-  25: "Read the number. Every one of those made drafts that know each client a little better.",
-  26: "Here's what you told us: this many manual tasks retired, and your tool of the year. We didn't give you free time. We took repetitive work off your plate so your time goes to work that matters.",
-  27: "Speed is half the story. Each of these safeguards stops a mistake before it reaches a client. [Beat + for each one]",
-  28: "The final boss: the legacy dashboard, untouched since 2023, whose Google Business charts showed random numbers. [Beat + four times] The last chunk is what's next.",
-  29: "Top three, congratulations. Thanks for playing. Questions?",
+  1: "Here is what you just told us: the manual tasks you retired and the tools you picked. We will come back to this at the end with everyone in.",
+  2: "Five presenters, five levels. Every level unlocks power-ups: the tools we built. The bar at the bottom counts the manual tasks you just told us you retired.",
+  3: "Level one: goodbye, spreadsheets.", 4: "Digital PR tracking, Brand Profiles, Review Removal and the Recipe Card agent replaced the sheets and docs we used to live in.",
+  5: "First question: how many commits did Systems push this year? Closest guess wins up to 500 points. You have 30 seconds.",
+  6: "Read the number and the podium out loud. The closest guess takes the Oracle badge.",
+  7: "Level two: monitoring nobody has to do.", 8: "Abenezer takes over.", 9: "The GBP monitor checks every listing and an AI filter drops the noise. Backlink gaps and Query Fan-Out turn hours of research into a button.",
+  10: "Level three: the client, in numbers.", 11: "Hikmat takes over.", 12: "Leads by channel, CRM leads, cost per lead and sentiment in one view, and the Lead Center Blin built, where every number clicks through to the leads.",
+  13: "How many real leads does the Lead Center track? Guess on your phone.", 14: "Read the number. Thousands of them became signed clients, all traceable to the lead.",
+  15: "This is where it shows up for clients: faster answers and faster fixes. The amber boxes are numbers we're still measuring.",
+  16: "Level four is the legendary one.", 17: "Roma and Blin take over.", 18: "The one legendary drop this year: AI Dev. A Slack message goes in, a pull request comes out, and you pick the change.",
+  19: "Vote now. [Close the vote] The room picked this one. Roma, send it. [Start] The clock is running. [Stop] Pull request open.",
+  20: "Last question: how many pull requests did AI DEV open from September 9 to 27?", 21: "Read the number: across 136 client repos, in under three weeks.",
+  22: "Level five: AI Writer and the boss fight.", 23: "Martin takes over.", 24: "AI Writer: drafts that know each client, checked against their Brand Profile before anyone sees them.",
+  25: "Question four: how many commits went into the AI Writer this year?",
+  26: "Read the number. Every one of those made drafts that know each client a little better.",
+  27: "Here's what you told us: this many manual tasks retired, and your tool of the year. We didn't give you free time. We took repetitive work off your plate so your time goes to work that matters.",
+  28: "Speed is half the story. Each of these safeguards stops a mistake before it reaches a client. [Beat + for each one]",
+  29: "The final boss: the legacy dashboard, untouched since 2023, whose Google Business charts showed random numbers. [Beat + four times] The last chunk is what's next.",
+  30: "Top three, congratulations. Thanks for playing. Questions?",
 };
-const JUMPS = [["Title", 0], ["L1", 1], ["Q1", 4], ["L2", 6], ["L3", 9], ["Q2", 12], ["Client", 14], ["L4", 15], ["AI Dev", 18], ["Q3", 19], ["L5", 21], ["Q4", 24], ["Pain", 26], ["Quality", 27], ["Boss", 28], ["Final", 29]];
+const JUMPS = [["Title", 0], ["Results", 1], ["L1", 2], ["Q1", 5], ["L2", 7], ["L3", 10], ["Q2", 13], ["Client", 15], ["L4", 16], ["AI Dev", 19], ["Q3", 20], ["L5", 22], ["Q4", 25], ["Pain", 27], ["Quality", 28], ["Boss", 29], ["Final", 30]];
 const VOTE_LABELS = { a: 'A · "Free case review" button', b: "B · FAQ section", c: "C · Review stars in footer", d: "D · Click-to-call bar" };
 
 const $ = (id) => document.getElementById(id);
@@ -196,7 +197,7 @@ function render() {
   } else if (kind === "beat") {
     title(label === "Boss fight" ? "Boss hits (4)" : "Safeguards (8)");
     row(button("Beat +", "go", () => control("beat", { d: 1 })), button("Beat −", "", () => control("beat", { d: -1 })));
-  } else if (i === 0) {
+  } else if (i === 0 || i === 1) {
     title("Missions done (wait until most are in)");
     const n = S.players.length;
     kv([["Players", fmt(n)], ["Tasks", `${fmt(S.hours.participants)}/${fmt(n)}`], ["Tool vote", `${fmt(S.tools.total)}/${fmt(n)}`]]);

@@ -72,7 +72,7 @@ html{touch-action:manipulation}
         <button onClick="{{ ms.openRate }}" style="text-align:left;background:#141821;border:2px solid {{ ms.rBorder }};color:#f4f5f8;padding:16px;cursor:pointer;display:flex;flex-direction:column;gap:8px">
           <div style="display:flex;justify-content:space-between;width:100%;align-items:center"><div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5">Mission 2</div><div style="font-size:14px;font-weight:900;border:2px solid #7c5cff;color:#b9a8ff;padding:0 8px">+100</div></div>
           <div style="font-size:21px;font-weight:800;line-height:1.15">Tool of the year</div>
-          <div style="font-size:14px;font-weight:500;color:#9aa3b5;line-height:1.35">Vote for the tool that made your year easier.</div>
+          <div style="font-size:14px;font-weight:500;color:#9aa3b5;line-height:1.35">Vote for the tools that made your year easier. Pick as many as you like.</div>
           <div style="font-size:15px;font-weight:800;color:{{ ms.rColor }};margin-top:4px">{{ ms.rStatus }}</div>
         </button>
         <div style="margin-top:auto;border-top:2px solid #1c2230;padding-top:14px;display:flex;justify-content:space-between;align-items:baseline;gap:12px"><div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5">Now playing</div><div style="font-size:15px;font-weight:800;text-align:right">{{ next.line }}</div></div>
@@ -104,7 +104,7 @@ html{touch-action:manipulation}
 
     <sc-if value="{{ v.rate }}" hint-placeholder-val="{{ false }}">
       <div style="flex:1;display:flex;flex-direction:column;min-height:0">
-        <div style="padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #1c2230"><button onClick="{{ tl.back }}" aria-label="Back" style="width:44px;height:44px;background:#141821;border:2px solid #2a3242;color:#f4f5f8;font-size:20px;font-weight:900;cursor:pointer;flex:none">←</button><div><div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#7c5cff">Mission 2 · Tool of the year</div><div style="font-size:19px;font-weight:800;margin-top:2px">Which tool made your year easier?</div></div></div>
+        <div style="padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #1c2230"><button onClick="{{ tl.back }}" aria-label="Back" style="width:44px;height:44px;background:#141821;border:2px solid #2a3242;color:#f4f5f8;font-size:20px;font-weight:900;cursor:pointer;flex:none">←</button><div><div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#7c5cff">Mission 2 · Tool of the year</div><div style="font-size:19px;font-weight:800;margin-top:2px">Which tools made your year easier?</div><div style="font-size:13px;font-weight:600;color:#9aa3b5;margin-top:2px">Pick as many as you like.</div></div></div>
         <div style="padding:14px 16px;display:flex;flex-direction:column;gap:6px">
           <sc-for list="{{ tl.opts }}" as="o"><button onClick="{{ o.on }}" style="min-height:54px;display:flex;align-items:center;gap:12px;padding:8px 14px;background:{{ o.bg }};border:2px solid {{ o.border }};color:#f4f5f8;cursor:pointer;text-align:left;font-family:inherit"><span style="flex:1;font-size:17px;font-weight:800">{{ o.label }}</span><span style="font-size:13px;font-weight:600;color:#9aa3b5">{{ o.sub }}</span><span style="font-size:20px;font-weight:900;color:#22d3a6;width:20px;text-align:right">{{ o.check }}</span></button></sc-for>
         </div>
@@ -263,7 +263,7 @@ class Component extends DCLogic {
       submit:()=>{if(!nameOk||this.state.me)return;const m={id:Math.random().toString(36).slice(2,10),name:S.name.trim(),avatar:jav.id};this.post('/api/join',{id:m.id,name:m.name,avatar:m.avatar});this.set({me:m},()=>{const early=!this.live&&(st.players||[]).length<10;this.award(100,early?'early':null);});}};
     const ms={edit:()=>this.setState({view:'edit'}),openHours:()=>this.setState({view:'hours'}),openRate:()=>this.setState({view:'rate'}),
       hStatus:hoursDone?'Done ✓ '+fmt(mock?3:S.hoursWeek)+' tasks retired':'Start →',hColor:hoursDone?'#22d3a6':'#f4f5f8',hBorder:hoursDone?'#1f3a36':'#7c5cff',
-      rStatus:rateDone?'Voted ✓ '+((TOOLS.find(t=>t.id===S.tool)||{}).label||''):'Start →',rColor:rateDone?'#22d3a6':'#f4f5f8',rBorder:rateDone?'#1f3a36':hoursDone?'#7c5cff':'#2a3242',
+      rStatus:rateDone?'Voted ✓ '+(Array.isArray(S.tool)?S.tool:[S.tool]).map(id=>(TOOLS.find(t=>t.id===id)||{}).label).filter(Boolean).join(', '):'Start →',rColor:rateDone?'#22d3a6':'#f4f5f8',rBorder:rateDone?'#1f3a36':hoursDone?'#7c5cff':'#2a3242',
       summary:'Missions: tasks '+(hoursDone?'✓':'—')+' · tool of the year '+(rateDone?'✓':'—')};
     const sector=mock&&pv==='hours'?'Digital PR':S.sector;const tasks=mock&&pv==='hours'?{'Updating PR tracking sheets':3,'Chasing placement status':1.5}:S.tasks;
     const total=Object.values(tasks).filter(v=>v>0).length;const W=this.props.weeksPerYear??48;
@@ -279,9 +279,9 @@ class Component extends DCLogic {
       sectors:SECTORS.map(n=>({name:n,bg:n===rs?'#7c5cff':'#141821',border:n===rs?'#7c5cff':'#2a3242',on:()=>this.set({rateSector:n})})),
       opts:RATE.map(o=>({n:o.n,label:o.label,bg:o.n===rating?'#1b1640':'#141821',border:o.n===rating?'#7c5cff':'#2a3242',numColor:o.n===rating?'#b9a8ff':'#f4f5f8',on:()=>this.set({rating:o.n})})),
       submit:()=>{if(!rs||!rating||mock)return;this.post('/api/rate',{sector:rs,score:rating});this.set({rateDone:true,view:'home'},()=>this.showPop(null,null));}};
-    const myTool=S.tool||null;const tl={back:()=>this.setState({view:'home'}),op:myTool?1:.45,
- opts:TOOLS.map(o=>({label:o.label,sub:o.sub,bg:o.id===myTool?'#1b1640':'#141821',border:o.id===myTool?'#7c5cff':'#2a3242',check:o.id===myTool?'✓':'',on:()=>this.set({tool:o.id})})),
- submit:()=>{if(!myTool||mock)return;this.post('/api/tool',{tool:myTool});const first=!S.rateDone;this.set({rateDone:true,view:'home'},()=>{if(first)this.award(100,null);else this.showPop(null,null);});}};
+    const myTools=Array.isArray(S.tool)?S.tool:(S.tool?[S.tool]:[]);const myTool=myTools.length>0;const tl={back:()=>this.setState({view:'home'}),op:myTool?1:.45,
+ opts:TOOLS.map(o=>{const on=myTools.includes(o.id);return {label:o.label,sub:o.sub,bg:on?'#1b1640':'#141821',border:on?'#7c5cff':'#2a3242',check:on?'✓':'',on:()=>this.set({tool:on?myTools.filter(x=>x!==o.id):[...myTools,o.id]})};}),
+ submit:()=>{if(!myTool||mock)return;this.post('/api/tool',{tools:myTools});const first=!S.rateDone;this.set({rateDone:true,view:'home'},()=>{if(first)this.award(100,null);else this.showPop(null,null);});}};
 const dur=this.props.questionSeconds??30;const rem=mock?18:(this.qOpenedAt?Math.max(0,dur-(S.now-this.qOpenedAt)/1000):dur);
     const qKey=mock?'commits':qid;const answered=mock?null:S.answered[qKey];const g=mock&&pv==='question'?'1500':S.guess;
     const qv={text:QUESTIONS[qKey]||QUESTIONS.commits,secs:Math.ceil(rem),pct:(rem/dur*100).toFixed(1),barColor:rem<6?'#ff5c8a':'#7c5cff',input:answered==null,locked:answered!=null,
