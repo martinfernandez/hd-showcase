@@ -215,6 +215,7 @@ button:focus-visible{outline:2px solid #7c5cff;outline-offset:2px}
 <sc-if value="{{ show.s8 }}" hint-placeholder-val="{{ false }}">
 <div data-screen-label="08 Pain removed" style="position:absolute;left:0;top:0;width:1600px;height:824px;padding:52px 72px 40px;box-sizing:border-box;display:flex;flex-direction:column">
   <div style="display:flex;align-items:center;gap:20px;padding-bottom:18px;border-bottom:2px solid #232a38"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Pain removed</div><div style="margin-left:auto;font-size:22px;font-weight:800;color:#9aa3b5">Reported live · {{ pain.people }} people</div></div>
+  <sc-if value="{{ pain.empty }}"><div style="margin-top:18px;background:#2a2112;border:2px dashed #ffb547;padding:16px 22px;font-size:30px;font-weight:800;color:#ffb547">Your turn: open the game on your phone and do both missions now. This screen fills in live.</div></sc-if>
   <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:2px solid #232a38">
     <div style="padding:20px 24px 20px 0;min-width:0"><div style="font-size:18px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Manual tasks retired</div><div style="font-size:84px;font-weight:900;line-height:1;letter-spacing:-.04em;margin-top:10px">{{ pain.retired }}</div></div>
     <div style="padding:20px 24px;border-left:2px solid #232a38;min-width:0"><div style="font-size:18px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#7c5cff">Tool of the year</div><div style="font-size:52px;font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-top:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ pain.top }}</div></div>
@@ -631,7 +632,7 @@ class Component extends DCLogic {
       live:lv.map(r=>{const t=this.tw('ls'+r.sector,show.s8?r.wk:0,900);return {sector:r.sector,w:(t/lmax*100).toFixed(1),val:fmt(t,1)+' h',sub:fmt(r.yr)+' h/yr'};})};
     const TLc=(s.tools&&s.tools.counts)||{};const ttot=(s.tools&&s.tools.total)||0;const tr=TOOLS.map(t=>({name:t.label,n:TLc[t.id]||0})).sort((a,b)=>b.n-a.n);const tmax=Math.max(1,...tr.map(r=>r.n));
 const BSx=H.bySector||{};const dr=SECTORS.map(sec=>({name:sec,n:(BSx[sec]&&BSx[sec].perWeek)||0,p:(BSx[sec]&&BSx[sec].participants)||0})).sort((a,b)=>b.n-a.n);const dmax=Math.max(1,...dr.map(r=>r.n));
-const pain={people:fmt(H.participants||0),retired:fmt(this.tw('pr',show.s8?(H.perWeek||0):0,1200)),votes:fmt(ttot)+' votes',top:ttot?tr[0].name:'—',dept:dr[0].n?dr[0].name:'—',
+const pain={empty:!(H.participants||0)&&!ttot,people:fmt(H.participants||0),retired:fmt(this.tw('pr',show.s8?(H.perWeek||0):0,1200)),votes:fmt(ttot)+' votes',top:ttot?tr[0].name:'—',dept:dr[0].n?dr[0].name:'—',
  tools:tr.map((r,i)=>({name:r.name,w:(this.tw('pt'+r.name,show.s8?r.n:0,900)/tmax*100).toFixed(1),pct:ttot?Math.round(r.n/ttot*100)+'%':'—',color:i===0&&r.n?'#7c5cff':'#3a3170'})),
  depts:dr.map(r=>({name:r.name,w:(this.tw('pd'+r.name,show.s8?r.n:0,900)/dmax*100).toFixed(1),val:fmt(r.n),sub:fmt(r.p)}))};
 Object.assign(hud,{tool:ttot?tr[0].name:'—',toolPct:ttot?Math.round(tr[0].n/ttot*100)+'%':''});

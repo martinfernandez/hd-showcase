@@ -196,6 +196,10 @@ function render() {
   } else if (kind === "beat") {
     title(label === "Boss fight" ? "Boss hits (4)" : "Safeguards (8)");
     row(button("Beat +", "go", () => control("beat", { d: 1 })), button("Beat −", "", () => control("beat", { d: -1 })));
+  } else if (i === 0) {
+    title("Missions done (wait until most are in)");
+    const n = S.players.length;
+    kv([["Players", fmt(n)], ["Tasks", `${fmt(S.hours.participants)}/${fmt(n)}`], ["Tool vote", `${fmt(S.tools.total)}/${fmt(n)}`]]);
   } else {
     title("On screen");
     const top = Object.entries(S.tools.counts).sort((a, b) => b[1] - a[1])[0];
