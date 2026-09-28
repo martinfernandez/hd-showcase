@@ -55,6 +55,8 @@
     <span class="stats" id="stats"></span>
   </div>
 
+  <div class="card" id="stale" hidden style="border-color:#ff5c8a;color:#ff5c8a;font-weight:800">This remote is out of date with the deck. Reload this page (and the deck) before continuing.</div>
+
   <div class="card" id="keyCard" hidden>
     <div class="label">Presenter key needed</div>
     <form id="keyForm"><input id="keyInput" type="password" autocomplete="off" placeholder="Paste the presenter key"><button type="submit">Save key on this device</button></form>
@@ -128,6 +130,7 @@ if (params.get("key")) { store.set("adminKey", params.get("key")); history.repla
 let KEY = store.get("adminKey") || "";
 let S = null;
 let resetArmed = 0;
+let staleCount = 0; // polls in a row where the deck reports a step this remote labels differently
 let lastControl = 0; // polls that started before the last button press are stale
 
 function toast(msg) { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => (t.hidden = true), 2600); }
@@ -226,6 +229,9 @@ async function poll() {
     const j = await r.json();
     if (started < lastControl) return;
     S = j;
+    const mine = STEPS[S.step || 0];
+    staleCount = S.stepLabel && (!mine || mine[0] !== S.stepLabel) ? staleCount + 1 : 0;
+    $("stale").hidden = staleCount < 4;
     $("conn").textContent = "Live"; $("conn").className = "chip ok";
     render();
   } catch (e) { $("conn").textContent = "Offline"; $("conn").className = "chip bad"; }
