@@ -19,6 +19,9 @@ export const IMPACT = {
     { sector: "Account Management", hoursPerWeek: null, drivers: ["Executive Summary", "Slack AI Assistant"] },
   ],
 
+  // Client email volume shared by the team on Sep 28, 2026 (period not stated yet).
+  volume: { emails: 66823, inbound: 33743, period: null },
+
   // Before → after, in minutes. "live" = measured by the stage stopwatch.
   client: [
     // Zendesk medians shared by the team on Sep 28, 2026 (current period). "before" still needed.
