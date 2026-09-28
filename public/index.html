@@ -115,14 +115,14 @@ html{touch-action:manipulation}
     <sc-if value="{{ v.question }}" hint-placeholder-val="{{ false }}">
       <div style="flex:1;display:flex;flex-direction:column;min-height:0">
         <div style="height:8px;background:#1c2230"><div style="height:100%;width:{{ qv.pct }}%;background:{{ qv.barColor }}"></div></div>
-        <div style="padding:16px 16px 0;display:flex;justify-content:space-between;align-items:center"><div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#ffb547">Live question · 0–500 pts</div><div style="font-size:22px;font-weight:900;color:{{ qv.barColor }}">{{ qv.secs }}s</div></div>
+        <div style="padding:16px 16px 0;display:flex;justify-content:space-between;align-items:center"><div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#ffb547">Live question · up to 500 pts</div><div style="font-size:22px;font-weight:900;color:{{ qv.barColor }}">{{ qv.secs }}s</div></div>
         <div style="padding:10px 16px 0;font-size:27px;font-weight:900;line-height:1.1;letter-spacing:-.02em">{{ qv.text }}</div>
         <sc-if value="{{ qv.input }}" hint-placeholder-val="{{ true }}">
           <div style="margin:16px 16px 0;background:#141821;border:2px solid #7c5cff;height:72px;display:flex;align-items:center;padding:0 16px;font-size:40px;font-weight:900;letter-spacing:-.02em;color:{{ qv.displayColor }}">{{ qv.display }}</div>
           <div style="margin-top:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:#1c2230;border-top:2px solid #1c2230;margin-top:16px">
             <sc-for list="{{ keypad }}" as="k" hint-placeholder-count="12"><button onClick="{{ k.on }}" style="height:58px;background:#0b0d12;border:none;color:{{ k.ink }};font-size:26px;font-weight:800;cursor:pointer" style-active="background:#1c2230">{{ k.label }}</button></sc-for>
           </div>
-          <div style="padding:12px 16px 16px"><button onClick="{{ qv.submit }}" style="width:100%;height:60px;background:#7c5cff;border:none;color:#ffffff;font-size:19px;font-weight:800;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;opacity:{{ qv.op }}" style-active="background:#6a4cf0"><span>Lock in guess</span><span style="color:#ffb547">0–500</span></button></div>
+          <div style="padding:12px 16px 16px"><button onClick="{{ qv.submit }}" style="width:100%;height:60px;background:#7c5cff;border:none;color:#ffffff;font-size:19px;font-weight:800;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;opacity:{{ qv.op }}" style-active="background:#6a4cf0"><span>Lock in guess</span><span style="color:#ffb547">→</span></button></div>
         </sc-if>
         <sc-if value="{{ qv.locked }}" hint-placeholder-val="{{ false }}">
           <div style="flex:1;display:flex;flex-direction:column;padding:28px 16px 20px">
