@@ -10,20 +10,24 @@ Live: https://hd-showcase.martin-b1c.workers.dev
 |---|---|
 | `/` | Phone page (QR target): join, two missions, live questions, AI Dev vote |
 | `/?preview` | Phone page with the design's state tabs, framed at 375px (desktop only) |
-| `/deck` | Projector deck: 28 steps + HUD |
+| `/deck` | Projector deck: 31 steps + HUD |
+| `/remote` | Presenter remote (phone or second tab): Next/Back, question/vote/stopwatch buttons, speech per step |
+| `/guide` | Run sheet: every screen, what to press, what to say |
 | `/deck?key=<ADMIN_KEY>` | Open once on the presenting laptop so the presenter bar can control the game |
 | `/deck?demo` | Rehearse with simulated players (nothing reaches phones or the server) |
 
 ## The game ("Pain removed" focus)
 
-- Join +100 (first 10: Early Bird).
+- Join +100 (first 100: Early Bird).
 - Mission 1, "Which manual work don't you miss?": tick tasks in any department, +200.
   Every tick is one task retired and fills the HUD bar (milestones 30 / 75 / 150).
   A task mentioning "sheet" gives Spreadsheet Slayer.
-- Mission 2, "Tool of the year": pick one of 8 tools, +100.
-- Three live guesses (commits 1,798 · Lead Center leads 67,300 · AI DEV PRs 897):
-  `max(0, round(500 × (1 − |guess − actual| / actual)))`, closest gets Oracle, all three gets Full Run.
-- AI Dev vote +100; voters of the winner get Crowd Whisperer.
+- Mission 2, "Tool of the year": multi-select among 8 tools, +100 once.
+- Four live guesses (commits · Lead Center leads · AI DEV PRs · AI Writer commits; answers in `src/config.js`):
+  `max(0, round(500 × (1 − |guess − actual| / actual)))`, closest gets Oracle, all four gets Full Run.
+- AI Dev vote (multi-select) +100 once; voters who picked the winner get Crowd Whisperer.
+
+See `CLAUDE.md` for architecture, sync points between files and gotchas.
 
 ## Presenting
 

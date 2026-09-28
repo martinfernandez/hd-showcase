@@ -22,7 +22,7 @@ export const QUESTIONS = { commits: 1798, leads: 67300, aidev_prs: 897, ai_write
 
 export const WEEKS_PER_YEAR = 48;
 export const FTE_HOURS = 1880;
-export const EARLY_BIRDS = 10;
+export const EARLY_BIRDS = 100;
 export const MAX_PLAYERS = 500;
 
 export const POINTS = { join: 100, hours: 200, vote: 100, tool: 100, guessMax: 500 };

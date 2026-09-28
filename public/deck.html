@@ -679,7 +679,7 @@ const cl=((s.impact&&s.impact.client)||CLIENT_DEFAULT).filter(m=>m.before!=null|
     const VOL=(s.impact&&s.impact.volume)||null;const clv=VOL&&VOL.emails?fmt(VOL.emails)+' client emails · '+fmt(VOL.inbound)+' inbound'+(VOL.period?' · '+VOL.period:''):'Before → after';
     return {scale:this.state.scale,show,level,hud,levels,intro,pu,q,rv,ai,hrs,pain,clv,clCols,clRows,cl,qs,boss,fin,toastEls,celebEl,ctl,
       qrSrc:this.state.qr||'data:image/gif;base64,R0lGODlhAQABAAAAACw=',joinUrlShort:short,
-      earlyText:players.length<10?'Early Bird badge: '+(10-players.length)+' spots left':'All 10 Early Bird badges claimed'};
+      earlyText:players.length<100?'Early Bird badge: '+(100-players.length)+' spots left':'All 100 Early Bird badges claimed'};
   }
 }
 

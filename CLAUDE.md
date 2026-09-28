@@ -41,7 +41,7 @@ Object `Room` (SQLite-backed) holding the whole game as one JSON document. Every
 ## The game ("Pain removed" focus)
 
 We deliberately do **not** ask for hours saved (people feel busier, not freer). Instead:
-- Join +100 (first 10: Early Bird).
+- Join +100 (first 100: Early Bird).
 - Mission 1, "Which manual work don't you miss?": tick tasks in any department, +200 once.
   Each tick counts **1** server-side whatever the phone sends. `hours.perWeek` in the API is
   the count of tasks retired (legacy field name). A task mentioning "sheet" → Spreadsheet Slayer.
