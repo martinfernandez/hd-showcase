@@ -173,7 +173,11 @@ function render() {
     const revealed = g.actual != null;
     title(kind === "q" ? "Live question" : "Reveal");
     kv([["Answers in", fmt(g.count)], ["Room median", g.median == null ? "–" : fmt(g.median)], ["Status", revealed ? "Revealed" : open ? "Open" : g.count ? "Closed" : "Ready"]]);
-    if (kind === "q") row(button("Open question", "go", () => control("openQ", { id: qid }), open || revealed), button("Close", "stop", () => control("closeQ", { id: qid }), !open));
+    if (kind === "q") {
+      row(button("Open question", "go", () => control("openQ", { id: qid }), open || revealed), button("Close", "stop", () => control("closeQ", { id: qid }), !open));
+      // One tap to the reveal screen: move the deck on, then reveal.
+      if (!open && (g.count || revealed)) row(button(revealed ? "Show the reveal ▶" : "Reveal ▶", "primary", async () => { await control("goto", { step: i + 1 }); if (!revealed) await control("revealQ", { id: qid }); }));
+    }
     else row(button(revealed ? "Revealed" : "Reveal answer", "go", () => control("revealQ", { id: qid }), revealed), button("Close question", "stop", () => control("closeQ", { id: qid }), !open));
   } else if (kind === "ai") {
     const V = S.vote; const T = S.timer || {};
