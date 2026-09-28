@@ -552,7 +552,7 @@ class Component extends DCLogic {
   testBadge(){const ps=(this.state.st&&this.state.st.players)||[];const p=ps[Math.floor(Math.random()*ps.length)]||{name:'Ana'};const ks=Object.keys(BADGES);this.pushToasts([{id:Math.random().toString(36).slice(2),name:p.name,b:ks[Math.floor(Math.random()*ks.length)]}]);}
   control(action,x={}){
     if(action==='level')this.setState({levelOverride:x.level});
-    if(action==='reset'){this.setState({levelOverride:null,toasts:[],beat:0});this._mil=undefined;this._pb=undefined;}
+    if(action==='reset'){this._lastLv=1;this.setState({levelOverride:null,toasts:[],beat:0,slide:0,qIdx:0},()=>this.save());this._mil=undefined;this._pb=undefined;}
     if(this.live||!this.props.forceDemo){fetch(this.props.controlUrl||'/api/control',{method:'POST',headers:{'content-type':'application/json','x-admin-key':ADMIN_KEY},body:JSON.stringify({action,...x})}).catch(()=>{});}
     else{this.simControl(action,x);this.ingest(this.snap());}
   }
