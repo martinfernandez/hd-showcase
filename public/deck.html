@@ -131,7 +131,7 @@ button:focus-visible{outline:2px solid #7c5cff;outline-offset:2px}
 
 <sc-if value="{{ show.s5 }}" hint-placeholder-val="{{ false }}">
 <div data-screen-label="05 Live question" style="position:absolute;left:0;top:0;width:1600px;height:824px;padding:52px 72px 40px;box-sizing:border-box;display:flex;flex-direction:column">
-  <div style="display:flex;align-items:center;gap:20px;padding-bottom:18px;border-bottom:2px solid #232a38"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Live question</div><div style="font-size:18px;font-weight:900;background:#ffb547;color:#0b0d12;padding:4px 10px">GUESS · UP TO 500 PTS</div><div style="margin-left:auto;font-size:22px;font-weight:800;color:#9aa3b5">Question {{ q.num }} of 3</div></div>
+  <div style="display:flex;align-items:center;gap:20px;padding-bottom:18px;border-bottom:2px solid #232a38"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Live question</div><div style="font-size:18px;font-weight:900;background:#ffb547;color:#0b0d12;padding:4px 10px">GUESS · UP TO 500 PTS</div><div style="margin-left:auto;font-size:22px;font-weight:800;color:#9aa3b5">Question {{ q.num }} of 4</div></div>
   <div style="flex:1;display:grid;grid-template-columns:minmax(0,1fr) 440px;gap:64px;margin-top:40px;min-height:0">
     <div style="display:flex;flex-direction:column;min-width:0">
       <div style="font-size:88px;font-weight:900;line-height:1;letter-spacing:-.04em;text-wrap:balance">{{ q.text }}</div>
@@ -454,7 +454,8 @@ const BOSS=['Random charts → real data','One-click login to client sites','Cli
 const QUESTIONS=[
  {id:'commits',q:'How many commits did Systems push this year?',short:'Commits this year',actual:1798},
  {id:'leads',q:'How many real leads does the Lead Center track?',short:'Leads in the Lead Center',actual:67300},
- {id:'aidev_prs',q:'How many pull requests did AI DEV open from Sept 9 to 27?',short:'AI DEV pull requests',actual:897}];
+ {id:'aidev_prs',q:'How many pull requests did AI DEV open from Sept 9 to 27?',short:'AI DEV pull requests',actual:897},
+ {id:'ai_writer',q:'How many commits went into the AI Writer this year?',short:'AI Writer commits',actual:155}];
 const VOTE_OPTS=[
  {k:'a',label:'Add a "Free case review" button to the homepage hero'},
  {k:'b',label:'Add an FAQ section to a practice-area page'},
@@ -484,6 +485,7 @@ const STEPS=[
  {s:'s7',lv:4,label:'AI Dev live',jump:'AI Dev'},
  {s:'s5',lv:4,q:2,label:'Q3 AI DEV PRs'},{s:'s6',lv:4,q:2,label:'Q3 reveal'},
  {s:'s2',lv:5,label:'L5 map',jump:'L5'},{s:'s3',lv:5,label:'L5 intro'},{s:'s4',lv:5,label:'L5 power-ups'},
+ {s:'s5',lv:5,q:3,label:'Q4 AI Writer'},{s:'s6',lv:5,q:3,label:'Q4 reveal'},
  {s:'s8',lv:5,label:'Pain removed',jump:'Pain'},{s:'s10',lv:5,label:'Quality Shield',jump:'Quality'},
  {s:'s11',lv:5,label:'Boss fight',jump:'Boss'},{s:'s12',lv:6,label:'Final',jump:'Final'}];
 const fmt=(n,d=0)=>Number(n||0).toLocaleString('en-US',{maximumFractionDigits:d});

@@ -92,6 +92,7 @@ const STEPS = [
   ["L4 map", "s2", 4], ["L4 intro", "s3", 4], ["L4 legendary", "s4", 4], ["AI Dev live", "ai", 4],
   ["Q3 AI DEV PRs", "q", 4, "aidev_prs"], ["Q3 reveal", "rv", 4, "aidev_prs"],
   ["L5 map", "s2", 5], ["L5 intro", "s3", 5], ["L5 power-ups", "s4", 5],
+  ["Q4 AI Writer", "q", 5, "ai_writer"], ["Q4 reveal", "rv", 5, "ai_writer"],
   ["Pain removed", "s8", 5], ["Quality Shield", "beat", 5], ["Boss fight", "beat", 5], ["Final", "s12", 6],
 ];
 const WHO = { 1: "Taulant", 2: "Abenezer", 3: "Hikmat", 4: "Roma & Blin", 5: "Martin", 6: "Martin" };
@@ -107,14 +108,16 @@ const SAY = {
   14: "This is where it shows up for clients: faster answers and faster fixes. The amber boxes are numbers we're still measuring.",
   15: "Level four is the legendary one.", 16: "Roma and Blin take over.", 17: "The one legendary drop this year: AI Dev. A Slack message goes in, a pull request comes out, and you pick the change.",
   18: "Vote now. [Close the vote] The room picked this one. Roma, send it. [Start] The clock is running. [Stop] Pull request open.",
-  19: "Last question: how many pull requests did AI DEV open from September 9 to 27?", 20: "Read the number: across 136 client repos, in under three weeks. Anyone who answered all three gets Full Run.",
+  19: "Last question: how many pull requests did AI DEV open from September 9 to 27?", 20: "Read the number: across 136 client repos, in under three weeks.",
   21: "Level five: AI Writer and the boss fight.", 22: "Martin takes over.", 23: "AI Writer: drafts that know each client, checked against their Brand Profile before anyone sees them.",
-  24: "Here's what you told us: this many manual tasks retired, and your tool of the year. We didn't give you free time. We took repetitive work off your plate so your time goes to work that matters.",
-  25: "Speed is half the story. Each of these safeguards stops a mistake before it reaches a client. [Beat + for each one]",
-  26: "The final boss: the legacy dashboard, untouched since 2023, whose Google Business charts showed random numbers. [Beat + four times] The last chunk is what's next.",
-  27: "Top three, congratulations. Thanks for playing. Questions?",
+  24: "Question four: how many commits went into the AI Writer this year?",
+  25: "Read the number. Every one of those made drafts that know each client a little better.",
+  26: "Here's what you told us: this many manual tasks retired, and your tool of the year. We didn't give you free time. We took repetitive work off your plate so your time goes to work that matters.",
+  27: "Speed is half the story. Each of these safeguards stops a mistake before it reaches a client. [Beat + for each one]",
+  28: "The final boss: the legacy dashboard, untouched since 2023, whose Google Business charts showed random numbers. [Beat + four times] The last chunk is what's next.",
+  29: "Top three, congratulations. Thanks for playing. Questions?",
 };
-const JUMPS = [["Title", 0], ["L1", 1], ["Q1", 4], ["L2", 6], ["L3", 9], ["Q2", 12], ["Client", 14], ["L4", 15], ["AI Dev", 18], ["Q3", 19], ["L5", 21], ["Pain", 24], ["Quality", 25], ["Boss", 26], ["Final", 27]];
+const JUMPS = [["Title", 0], ["L1", 1], ["Q1", 4], ["L2", 6], ["L3", 9], ["Q2", 12], ["Client", 14], ["L4", 15], ["AI Dev", 18], ["Q3", 19], ["L5", 21], ["Q4", 24], ["Pain", 26], ["Quality", 27], ["Boss", 28], ["Final", 29]];
 const VOTE_LABELS = { a: 'A · "Free case review" button', b: "B · FAQ section", c: "C · Review stars in footer", d: "D · Click-to-call bar" };
 
 const $ = (id) => document.getElementById(id);

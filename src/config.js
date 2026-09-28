@@ -17,7 +17,8 @@ export const TOOL_IDS = [
 // Live questions and their real answers.
 // commits: git history of the three repos, Sep 2025 → Sep 2026.
 // leads, aidev_prs: Blin's HenneHuddle deck (Lead Center snapshot Sep 22; AI DEV Sep 9–27).
-export const QUESTIONS = { commits: 1798, leads: 67300, aidev_prs: 897 };
+// ai_writer: commit subjects mentioning the AI Writer since 2025-09-01 (101 backend + 54 frontend).
+export const QUESTIONS = { commits: 1798, leads: 67300, aidev_prs: 897, ai_writer: 155 };
 
 export const WEEKS_PER_YEAR = 48;
 export const FTE_HOURS = 1880;
