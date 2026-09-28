@@ -21,8 +21,9 @@ export const IMPACT = {
 
   // Before → after, in minutes. "live" = measured by the stage stopwatch.
   client: [
-    { id: "response", sub: "Client requests", label: "Time to first response", before: null, after: null },
-    { id: "ticket", sub: "Tickets", label: "Average resolution time", before: null, after: null },
+    // Zendesk medians shared by the team on Sep 28, 2026 (current period). "before" still needed.
+    { id: "response", sub: "Client requests · median", label: "Time to first reply", before: null, after: 10 },
+    { id: "ticket", sub: "Tickets · median · first resolution 5.1 h", label: "Full resolution time", before: null, after: 768 },
     { id: "aidev", sub: "AI Dev", label: "Small site change live on staging", before: null, after: "live" },
     { id: "writer", sub: "AI Writer", label: "Client-ready content draft", before: null, after: null },
   ],
