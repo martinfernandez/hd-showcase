@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;background:#05060a;color:#f4f5f8;font-family:Inter,system-ui,sans-serif;font-variant-numeric:tabular-nums;-webkit-tap-highlight-color:transparent}
+a{color:#22d3a6}a:hover{color:#7c5cff}
+button{font-family:inherit}
+button:focus-visible,input:focus-visible{outline:2px solid #7c5cff;outline-offset:2px}
+@keyframes pop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:1ms!important;transition:none!important}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#05060a;display:flex;flex-direction:column;align-items:center">
+  <sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:16px;max-width:760px">
+      <div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5;margin-right:6px">Preview state</div>
+      <sc-for list="{{ tabs }}" as="t"><button onClick="{{ t.on }}" style="font-size:13px;font-weight:700;padding:7px 10px;background:{{ t.bg }};color:#f4f5f8;border:2px solid {{ t.border }};cursor:pointer">{{ t.label }}</button></sc-for>
+    </div>
+  </sc-if>
+  <div data-screen-label="{{ screenLabel }}" style="width:100%;max-width:{{ frameW }};min-height:{{ frameH }};background:#0b0d12;border:{{ frameBorder }};box-sizing:border-box;position:relative;display:flex;flex-direction:column;overflow:hidden">
+
+    <sc-if value="{{ hasHeader }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:2px solid #1c2230">
+        <div style="width:40px;height:40px;background:{{ me.color }};color:#0b0d12;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;flex:none">{{ me.glyph }}</div>
+        <div style="min-width:0;flex:1"><div style="font-size:17px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ me.name }}</div><div style="font-size:13px;font-weight:600;color:#9aa3b5">Rank {{ me.rank }} of {{ me.of }}</div></div>
+        <div style="display:flex;align-items:baseline;gap:4px"><div style="font-size:24px;font-weight:900;color:#ffb547">{{ me.points }}</div><div style="font-size:12px;font-weight:800;color:#9aa3b5">PTS</div></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.join }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:1;display:flex;flex-direction:column;padding:28px 20px 20px">
+        <div style="display:flex;align-items:center;gap:10px"><div style="width:10px;height:10px;background:#7c5cff"></div><div style="font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Systems · Year in levels</div></div>
+        <div style="font-size:48px;font-weight:900;line-height:.95;letter-spacing:-.04em;margin-top:24px">Join the game.</div>
+        <div style="font-size:16px;font-weight:500;color:#aab2c2;margin-top:12px;line-height:1.4">Guess, vote and report the hours you got back. The top 10 make the final podium.</div>
+        <div style="margin-top:32px;display:flex;gap:16px;align-items:center">
+          <button onClick="{{ join.reroll }}" aria-label="Shuffle avatar" style="width:88px;height:88px;background:{{ join.color }};border:none;font-size:44px;font-weight:900;color:#0b0d12;cursor:pointer;flex:none">{{ join.glyph }}</button>
+          <div><div style="font-size:16px;font-weight:800">Your avatar</div><div style="font-size:14px;font-weight:500;color:#9aa3b5;margin-top:4px">Picked for you. Tap to shuffle.</div></div>
+        </div>
+        <div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5;margin-top:28px">First name</div>
+        <input value="{{ join.name }}" onChange="{{ join.onName }}" placeholder="e.g. Dana" style="margin-top:8px;height:56px;background:#141821;border:2px solid #2a3242;color:#f4f5f8;font-family:inherit;font-size:22px;font-weight:700;padding:0 16px;outline:none;border-radius:0" style-focus="border-color:#7c5cff">
+        <div style="margin-top:auto;padding-top:24px"><button onClick="{{ join.submit }}" style="width:100%;height:60px;background:#7c5cff;border:none;color:#ffffff;font-size:19px;font-weight:800;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;opacity:{{ join.op }}" style-active="background:#6a4cf0"><span>Join game</span><span style="color:#ffb547">+100</span></button></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.missions }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;display:flex;flex-direction:column;padding:20px 16px;gap:12px">
+        <div style="font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Missions</div>
+        <div style="font-size:32px;font-weight:900;letter-spacing:-.03em;line-height:1">Two ways to score</div>
+        <button onClick="{{ ms.openHours }}" style="text-align:left;background:#141821;border:2px solid {{ ms.hBorder }};color:#f4f5f8;padding:16px;cursor:pointer;display:flex;flex-direction:column;gap:8px;margin-top:8px">
+          <div style="display:flex;justify-content:space-between;width:100%;align-items:center"><div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5">Mission 1</div><div style="font-size:14px;font-weight:900;background:#ffb547;color:#0b0d12;padding:2px 8px">+200</div></div>
+          <div style="font-size:21px;font-weight:800;line-height:1.15">Report the hours you no longer spend</div>
+          <div style="font-size:14px;font-weight:500;color:#9aa3b5;line-height:1.35">Pick your department, then your tasks.</div>
+          <div style="font-size:15px;font-weight:800;color:{{ ms.hColor }};margin-top:4px">{{ ms.hStatus }}</div>
+        </button>
+        <button onClick="{{ ms.openRate }}" style="text-align:left;background:#141821;border:2px solid {{ ms.rBorder }};color:#f4f5f8;padding:16px;cursor:pointer;display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between;width:100%;align-items:center"><div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5">Mission 2</div><div style="font-size:14px;font-weight:900;border:2px solid #7c5cff;color:#b9a8ff;padding:0 8px">Quality Score</div></div>
+          <div style="font-size:21px;font-weight:800;line-height:1.15">Rate the change</div>
+          <div style="font-size:14px;font-weight:500;color:#9aa3b5;line-height:1.35">How much less rework, how many fewer errors in your area? 1–5.</div>
+          <div style="font-size:15px;font-weight:800;color:{{ ms.rColor }};margin-top:4px">{{ ms.rStatus }}</div>
+        </button>
+        <div style="margin-top:auto;border-top:2px solid #1c2230;padding-top:14px;display:flex;justify-content:space-between;align-items:baseline;gap:12px"><div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5">Next up</div><div style="font-size:15px;font-weight:800;text-align:right">{{ next.line }}</div></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.hours }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;display:flex;flex-direction:column;min-height:0">
+        <div style="padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #1c2230"><button onClick="{{ hr.back }}" aria-label="Back" style="width:44px;height:44px;background:#141821;border:2px solid #2a3242;color:#f4f5f8;font-size:20px;font-weight:900;cursor:pointer;flex:none">←</button><div><div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#22d3a6">Mission 1 · Step {{ hr.stepN }} of 2</div><div style="font-size:19px;font-weight:800;margin-top:2px">{{ hr.title }}</div></div></div>
+        <sc-if value="{{ hr.pick }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <sc-for list="{{ hr.sectors }}" as="d" hint-placeholder-count="8"><button onClick="{{ d.on }}" style="min-height:64px;text-align:left;padding:10px 12px;background:{{ d.bg }};border:2px solid {{ d.border }};color:#f4f5f8;font-size:16px;font-weight:800;cursor:pointer;line-height:1.2">{{ d.name }}</button></sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ hr.tasks }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:4px 16px;display:flex;flex-direction:column">
+            <sc-for list="{{ hr.list }}" as="t" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:2px solid #1c2230">
+                <div style="flex:1;font-size:16px;font-weight:700;line-height:1.25;min-width:0">{{ t.name }}</div>
+                <div style="display:flex;align-items:center;border:2px solid #2a3242;flex:none">
+                  <button onClick="{{ t.dec }}" aria-label="Less" style="width:44px;height:44px;background:#141821;border:none;color:#f4f5f8;font-size:22px;font-weight:900;cursor:pointer">−</button>
+                  <div style="width:56px;text-align:center;font-size:19px;font-weight:900;color:{{ t.color }}">{{ t.val }}</div>
+                  <button onClick="{{ t.inc }}" aria-label="More" style="width:44px;height:44px;background:#141821;border:none;color:#f4f5f8;font-size:22px;font-weight:900;cursor:pointer">+</button>
+                </div>
+              </div>
+            </sc-for>
+            <div style="font-size:13px;font-weight:500;color:#9aa3b5;margin-top:10px">Hours per week you no longer spend. Half-hour steps.</div>
+          </div>
+          <div style="margin-top:auto;padding:14px 16px 16px;border-top:2px solid #1c2230;background:#0b0d12">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px"><div style="display:flex;align-items:baseline;gap:6px"><div style="font-size:32px;font-weight:900">{{ hr.total }}</div><div style="font-size:14px;font-weight:700;color:#9aa3b5">h / week</div></div><div style="font-size:14px;font-weight:700;color:#22d3a6">≈ {{ hr.year }} h / year</div></div>
+            <button onClick="{{ hr.submit }}" style="width:100%;height:60px;background:#7c5cff;border:none;color:#ffffff;font-size:19px;font-weight:800;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;opacity:{{ hr.op }}" style-active="background:#6a4cf0"><span>Submit hours</span><span style="color:#ffb547">+200</span></button>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.rate }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;display:flex;flex-direction:column;min-height:0">
+        <div style="padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #1c2230"><button onClick="{{ rt.back }}" aria-label="Back" style="width:44px;height:44px;background:#141821;border:2px solid #2a3242;color:#f4f5f8;font-size:20px;font-weight:900;cursor:pointer;flex:none">←</button><div><div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#7c5cff">Mission 2 · Quality Score</div><div style="font-size:19px;font-weight:800;margin-top:2px">Rate the change</div></div></div>
+        <div style="padding:16px 16px 0">
+          <div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5">Your area</div>
+          <div style="display:flex;gap:6px;overflow-x:auto;margin-top:8px;padding-bottom:4px">
+            <sc-for list="{{ rt.sectors }}" as="d" hint-placeholder-count="8"><button onClick="{{ d.on }}" style="flex:none;height:44px;padding:0 12px;background:{{ d.bg }};border:2px solid {{ d.border }};color:#f4f5f8;font-size:14px;font-weight:800;cursor:pointer;white-space:nowrap">{{ d.name }}</button></sc-for>
+          </div>
+          <div style="font-size:21px;font-weight:800;line-height:1.2;margin-top:18px">Compared with a year ago, how much less rework and how many fewer errors do you see?</div>
+        </div>
+        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:6px">
+          <sc-for list="{{ rt.opts }}" as="o" hint-placeholder-count="5"><button onClick="{{ o.on }}" style="height:56px;display:flex;align-items:center;gap:14px;padding:0 14px;background:{{ o.bg }};border:2px solid {{ o.border }};color:#f4f5f8;cursor:pointer;text-align:left"><span style="font-size:24px;font-weight:900;width:24px;color:{{ o.numColor }}">{{ o.n }}</span><span style="font-size:16px;font-weight:700">{{ o.label }}</span></button></sc-for>
+        </div>
+        <div style="margin-top:auto;padding:0 16px 16px"><button onClick="{{ rt.submit }}" style="width:100%;height:60px;background:#7c5cff;border:none;color:#ffffff;font-size:19px;font-weight:800;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;opacity:{{ rt.op }}" style-active="background:#6a4cf0"><span>Submit rating</span><span style="color:#ffb547">→</span></button></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.question }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;display:flex;flex-direction:column;min-height:0">
+        <div style="height:8px;background:#1c2230"><div style="height:100%;width:{{ qv.pct }}%;background:{{ qv.barColor }}"></div></div>
+        <div style="padding:16px 16px 0;display:flex;justify-content:space-between;align-items:center"><div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#ffb547">Live question · 0–500 pts</div><div style="font-size:22px;font-weight:900;color:{{ qv.barColor }}">{{ qv.secs }}s</div></div>
+        <div style="padding:10px 16px 0;font-size:27px;font-weight:900;line-height:1.1;letter-spacing:-.02em">{{ qv.text }}</div>
+        <sc-if value="{{ qv.input }}" hint-placeholder-val="{{ true }}">
+          <div style="margin:16px 16px 0;background:#141821;border:2px solid #7c5cff;height:72px;display:flex;align-items:center;padding:0 16px;font-size:40px;font-weight:900;letter-spacing:-.02em;color:{{ qv.displayColor }}">{{ qv.display }}</div>
+          <div style="margin-top:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:#1c2230;border-top:2px solid #1c2230;margin-top:16px">
+            <sc-for list="{{ keypad }}" as="k" hint-placeholder-count="12"><button onClick="{{ k.on }}" style="height:58px;background:#0b0d12;border:none;color:{{ k.ink }};font-size:26px;font-weight:800;cursor:pointer" style-active="background:#1c2230">{{ k.label }}</button></sc-for>
+          </div>
+          <div style="padding:12px 16px 16px"><button onClick="{{ qv.submit }}" style="width:100%;height:60px;background:#7c5cff;border:none;color:#ffffff;font-size:19px;font-weight:800;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;opacity:{{ qv.op }}" style-active="background:#6a4cf0"><span>Lock in guess</span><span style="color:#ffb547">0–500</span></button></div>
+        </sc-if>
+        <sc-if value="{{ qv.locked }}" hint-placeholder-val="{{ false }}">
+          <div style="flex:1;display:flex;flex-direction:column;padding:28px 16px 20px">
+            <div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#22d3a6">Locked in</div>
+            <div style="font-size:72px;font-weight:900;letter-spacing:-.04em;line-height:1;margin-top:8px">{{ qv.display }}</div>
+            <div style="font-size:16px;font-weight:600;color:#aab2c2;margin-top:16px;line-height:1.4">Watch the big screen. Closest guess earns the Oracle badge.</div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.vote }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;display:flex;flex-direction:column;padding:20px 16px 16px;gap:10px">
+        <div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#ff5c8a">Level 4 · AI Dev · Live vote</div>
+        <div style="font-size:30px;font-weight:900;letter-spacing:-.03em;line-height:1.02">What should the AI build?</div>
+        <div style="font-size:15px;font-weight:500;color:#aab2c2;line-height:1.35">The winner gets built live on stage. Pick the winner for Crowd Whisperer.</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+          <sc-for list="{{ vt.opts }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.on }}" style="min-height:76px;display:flex;align-items:center;gap:14px;padding:12px 14px;background:{{ o.bg }};border:2px solid {{ o.border }};color:#f4f5f8;cursor:pointer;text-align:left"><span style="width:44px;height:44px;flex:none;background:{{ o.kBg }};color:#0b0d12;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900">{{ o.k }}</span><span style="font-size:16px;font-weight:700;line-height:1.3;flex:1">{{ o.label }}</span><span style="font-size:20px;font-weight:900;color:#22d3a6">{{ o.check }}</span></button></sc-for>
+        </div>
+        <div style="margin-top:auto;font-size:15px;font-weight:800;color:{{ vt.noteColor }}">{{ vt.note }}</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.waiting }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;display:flex;flex-direction:column;padding:20px 16px;gap:16px">
+        <div style="font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Your run</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;border:2px solid #232a38">
+          <div style="padding:16px"><div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5">Points</div><div style="font-size:44px;font-weight:900;line-height:1;margin-top:8px;letter-spacing:-.03em">{{ me.points }}</div></div>
+          <div style="padding:16px;border-left:2px solid #232a38"><div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5">Rank</div><div style="display:flex;align-items:baseline;gap:6px;margin-top:8px"><div style="font-size:44px;font-weight:900;line-height:1;letter-spacing:-.03em">{{ me.rank }}</div><div style="font-size:14px;font-weight:700;color:#9aa3b5">of {{ me.of }}</div></div></div>
+        </div>
+        <div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5">Badges · {{ me.badgeCount }} of 5</div>
+        <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px">
+          <sc-for list="{{ badgeGrid }}" as="b" hint-placeholder-count="5"><div style="display:flex;flex-direction:column;align-items:center;gap:6px;opacity:{{ b.op }};min-width:0"><div style="width:56px;height:56px;background:{{ b.color }};clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);position:relative"><div style="position:absolute;inset:3px;background:#0b0d12;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);display:flex;align-items:center;justify-content:center"><img src="{{ b.icon }}" alt="" style="width:26px;height:26px"></div></div><div style="font-size:12px;font-weight:700;text-align:center;line-height:1.15;color:#aab2c2">{{ b.name }}</div></div></sc-for>
+        </div>
+        <div style="background:#141821;border:2px solid #232a38;padding:16px;margin-top:4px">
+          <div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#7c5cff">Next up</div>
+          <div style="font-size:30px;font-weight:900;letter-spacing:-.02em;margin-top:6px">Level {{ next.n }}</div>
+          <div style="font-size:16px;font-weight:700;color:#aab2c2;margin-top:2px">{{ next.who }} · {{ next.title }}</div>
+        </div>
+        <div style="margin-top:auto;font-size:14px;font-weight:700;color:#9aa3b5">{{ ms.summary }}</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ v.final }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;display:flex;flex-direction:column;padding:24px 16px;gap:16px">
+        <div style="font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Final scoreboard</div>
+        <div style="display:flex;align-items:flex-end;gap:14px"><div style="font-size:120px;font-weight:900;line-height:.85;letter-spacing:-.06em;color:{{ fn.color }}">{{ fn.rank }}</div><div style="padding-bottom:8px"><div style="font-size:20px;font-weight:800">{{ fn.label }}</div><div style="font-size:14px;font-weight:600;color:#9aa3b5">of {{ me.of }} players</div></div></div>
+        <div style="display:flex;align-items:baseline;gap:8px;border-top:2px solid #232a38;padding-top:14px"><div style="font-size:44px;font-weight:900;color:#ffb547;letter-spacing:-.03em">{{ me.points }}</div><div style="font-size:14px;font-weight:800;color:#9aa3b5">POINTS</div></div>
+        <div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5">Badges earned · {{ me.badgeCount }}</div>
+        <div style="display:flex;flex-direction:column;border-top:2px solid #1c2230">
+          <sc-for list="{{ fn.badges }}" as="b" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:2px solid #1c2230"><div style="width:40px;height:40px;background:{{ b.color }};clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);position:relative;flex:none"><div style="position:absolute;inset:3px;background:#0b0d12;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);display:flex;align-items:center;justify-content:center"><img src="{{ b.icon }}" alt="" style="width:20px;height:20px"></div></div><div style="font-size:17px;font-weight:800">{{ b.name }}</div></div></sc-for>
+        </div>
+        <div style="margin-top:auto;font-size:16px;font-weight:700;color:#aab2c2;line-height:1.4">Thanks for playing. The room banked <span style="color:#22d3a6;font-weight:900">{{ fn.bank }} h/year</span>.</div>
+      </div>
+    </sc-if>
+
+    {{ popEl }}
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;760px&quot;,&quot;height&quot;:&quot;900px&quot;},&quot;previewState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;live&quot;,&quot;join&quot;,&quot;missions&quot;,&quot;hours&quot;,&quot;rate&quot;,&quot;question&quot;,&quot;vote&quot;,&quot;waiting&quot;,&quot;final&quot;],&quot;default&quot;:&quot;live&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;questionSeconds&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:30,&quot;min&quot;:10,&quot;max&quot;:120,&quot;tsType&quot;:&quot;number&quot;},&quot;weeksPerYear&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:48,&quot;min&quot;:40,&quot;max&quot;:52,&quot;tsType&quot;:&quot;number&quot;}}">
+const SECTORS=['SEO','Content','Web/WordPress','Digital PR','Link Building','Local/GBP','Paid Media','Account Management'];
+const TASKS={
+ 'SEO':['Pulling ranking & query data','Writing on-page recommendations','Checking GBP listings'],
+ 'Content':['Writing first drafts','Brand & compliance checks','Revision rounds'],
+ 'Web/WordPress':['Small site changes','Setting up staging copies','Logging in to client sites'],
+ 'Digital PR':['Updating PR tracking sheets','Chasing placement status','Building PR reports'],
+ 'Link Building':['Finding competitor backlink gaps','Updating outreach sheets'],
+ 'Local/GBP':['Checking listings for changes','Review removal requests','Updating listing sheets'],
+ 'Paid Media':['Pulling leads & cost per lead','Building client reports'],
+ 'Account Management':['Pulling numbers for client calls','Chasing client credentials','Answering "how are my leads?"']};
+const LEVELS=[{n:1,who:'Taulant',title:'Goodbye, spreadsheets'},{n:2,who:'Abenezer',title:'Monitoring nobody has to do'},{n:3,who:'Hikmat',title:'The client, in numbers'},{n:4,who:'Roma',title:'AI Dev'},{n:5,who:'Martin',title:'AI Writer & the boss fight'}];
+const QUESTIONS={commits:'How many commits did Systems push this year?',prs:'How many pull requests did we merge?',features:'How many features did we ship?'};
+const VOTE_OPTS=[{k:'a',label:'Add a "Free case review" button to the homepage hero'},{k:'b',label:'Add an FAQ section to a practice-area page'},{k:'c',label:'Show Google review stars in the site footer'},{k:'d',label:'Add a click-to-call bar on mobile'}];
+const RATE=[{n:5,label:'Far fewer'},{n:4,label:'Clearly fewer'},{n:3,label:'Somewhat fewer'},{n:2,label:'Barely any change'},{n:1,label:'No change'}];
+const BADGES={slayer:{name:'Spreadsheet Slayer',color:'#22d3a6',icon:'sheet'},early:{name:'Early Bird',color:'#ffb547',icon:'sunrise'},oracle:{name:'Oracle',color:'#7c5cff',icon:'eye'},crowd:{name:'Crowd Whisperer',color:'#ff5c8a',icon:'users'},full:{name:'Full Run',color:'#22d3a6',icon:'flag'}};
+const ICONS={
+ sheet:'<rect width="18" height="18" x="3" y="3"/><path d="M3 9h18M3 15h18M9 9v12M15 9v12"/><path d="M2 2l20 20"/>',
+ sunrise:'<path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/>',
+ eye:'<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+ users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+ flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>'};
+const iconURL=(n,c)=>'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+ICONS[n]+'</svg>');
+const AVATARS=[{id:'a1',color:'#7c5cff',glyph:'▲'},{id:'a2',color:'#22d3a6',glyph:'●'},{id:'a3',color:'#ffb547',glyph:'■'},{id:'a4',color:'#ff5c8a',glyph:'◆'},{id:'a5',color:'#9d86ff',glyph:'✚'},{id:'a6',color:'#5ee6c3',glyph:'★'},{id:'a7',color:'#ffd08a',glyph:'⬢'},{id:'a8',color:'#ff8fb0',glyph:'◐'}];
+const fmt=(n,d=0)=>Number(n||0).toLocaleString('en-US',{maximumFractionDigits:d});
+const badgeKey=b=>BADGES[b]?b:(Object.keys(BADGES).find(k=>BADGES[k].name.toLowerCase()===String(b).toLowerCase())||b);
+const PREVIEWS=['live','join','missions','hours','rate','question','vote','waiting','final'];
+const MOCK={me:{id:'demo',name:'Dana',avatar:'a2'},points:1300,badges:['early','slayer'],hoursDone:true,rateDone:false};
+
+class Component extends DCLogic {
+  state={me:null,st:null,view:'home',sector:null,tasks:{},rateSector:null,rating:null,guess:'',answered:{},voted:{},hoursDone:false,hoursWeek:0,rateDone:false,points:0,badges:[],pop:null,avatarIdx:Math.floor(Math.random()*8),name:'',preview:null,wide:false,now:Date.now()};
+  componentDidMount(){
+    try{const sv=JSON.parse(localStorage.getItem('hd-player')||'null');if(sv)this.setState(sv);}catch(e){}
+    this.onResize=()=>this.setState({wide:innerWidth>600});this.onResize();addEventListener('resize',this.onResize);
+    this._skip=0;this.poll();this._poll=setInterval(()=>this.poll(),1500);this._tick=setInterval(()=>{if(this.state.st&&this.state.st.guessOpen)this.setState({now:Date.now()});},250);
+  }
+  componentWillUnmount(){removeEventListener('resize',this.onResize);clearInterval(this._poll);clearInterval(this._tick);}
+  persist(){const {me,sector,tasks,rateSector,rating,answered,voted,hoursDone,hoursWeek,rateDone,points,badges}=this.state;try{localStorage.setItem('hd-player',JSON.stringify({me,sector,tasks,rateSector,rating,answered,voted,hoursDone,hoursWeek,rateDone,points,badges}));}catch(e){}}
+  set(o,cb){this.setState(o,()=>{this.persist();cb&&cb();});}
+  async poll(){
+    if(this._skip<=0){try{const r=await fetch(this.props.apiUrl||'/api/state',{cache:'no-store'});if(r.ok){const j=await r.json();if(j&&j.hours){this.live=true;this.ingest(j);return;}}}catch(e){}this._skip=20;}
+    this._skip--;this.live=false;if(!this.state.st)this.ingest({hours:{perYear:2140,participants:18},vote:{open:false,counts:{},total:0},guessOpen:null,guesses:{},timer:{},players:[],level:2});
+  }
+  ingest(j){const prev=this.state.st;if(j.guessOpen&&!(prev&&prev.guessOpen))this.qOpenedAt=Date.now();
+    const me=this.state.me;if(me&&j.players){const p=j.players.find(p=>p.name===me.name);if(p){const nb=(p.badges||[]).map(badgeKey);const fresh=nb.filter(b=>!this.state.badges.includes(b)&&BADGES[b]);if(fresh.length)this.showPop(fresh[0]);this.set({badges:nb,points:p.points||this.state.points});}}
+    this.setState({st:j,now:Date.now()});}
+  post(path,body){if(!this.live)return;fetch(path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:this.state.me&&this.state.me.id,name:this.state.me&&this.state.me.name,...body})}).catch(()=>{});}
+  showPop(b,pts){this.setState({pop:{id:Date.now(),b,pts}});clearTimeout(this._pt);this._pt=setTimeout(()=>this.setState({pop:null}),2200);}
+  award(pts,badge){this.set(s=>({points:s.points+pts,badges:badge&&!s.badges.includes(badge)?[...s.badges,badge]:s.badges}));this.showPop(badge||null,pts);}
+  renderVals(){
+    const S=this.state;const st=S.st||{};const pv=S.preview||this.props.previewState||'live';const mock=pv!=='live';
+    const meRaw=mock?MOCK.me:S.me;const points=mock?MOCK.points:S.points;const badges=mock?MOCK.badges:S.badges;
+    const hoursDone=mock?MOCK.hoursDone:S.hoursDone;const rateDone=mock?MOCK.rateDone:S.rateDone;
+    const players=(st.players||[]).slice();if(meRaw&&!players.some(p=>p.name===meRaw.name))players.push({name:meRaw.name,points});players.sort((a,b)=>(b.points||0)-(a.points||0));
+    const rankI=meRaw?players.findIndex(p=>p.name===meRaw.name):-1;const of=mock?57:Math.max(players.length,1);const rank=mock?7:rankI+1;
+    const qid=typeof st.guessOpen==='string'?st.guessOpen:(st.guessOpen?'commits':null);const V=st.vote||{};
+    const isFinal=st.phase==='final'||st.level==='final'||+st.level>=6;
+    let view;if(mock)view=pv==='missions'?'missions':pv;else if(!S.me)view='join';else if(isFinal)view='final';else if(V.open)view='vote';else if(qid)view='question';else if(S.view==='hours')view='hours';else if(S.view==='rate')view='rate';else view=(hoursDone&&rateDone)?'waiting':'missions';
+    const v={};PREVIEWS.forEach(k=>v[k]=view===k);
+    const av=AVATARS.find(a=>a.id===(meRaw&&meRaw.avatar))||AVATARS[S.avatarIdx%8];
+    const me={name:meRaw?meRaw.name:'',color:av.color,glyph:av.glyph,points:fmt(points),rank:'#'+rank,of:fmt(of),badgeCount:badges.length};
+    const lvl=Math.min(5,Math.max(1,+st.level||1));const nx=LEVELS[Math.min(4,mock?2:lvl)]||LEVELS[4];
+    const next={n:nx.n,who:nx.who,title:nx.title,line:'Level '+nx.n+' · '+nx.who};
+    const jav=AVATARS[S.avatarIdx%8];const nameOk=S.name.trim().length>0;
+    const join={name:S.name,color:jav.color,glyph:jav.glyph,op:nameOk?1:.45,reroll:()=>this.setState(s=>({avatarIdx:(s.avatarIdx+1)%8})),onName:e=>this.setState({name:e.target.value.slice(0,20)}),
+      submit:()=>{if(!nameOk)return;const m={id:Math.random().toString(36).slice(2,10),name:S.name.trim(),avatar:jav.id};this.post('/api/join',{name:m.name,avatar:m.avatar});this.set({me:m},()=>{const early=!this.live&&(st.players||[]).length<10;this.award(100,early?'early':null);});}};
+    const ms={openHours:()=>this.setState({view:'hours'}),openRate:()=>this.setState({view:'rate'}),
+      hStatus:hoursDone?'Done ✓ '+fmt(mock?6.5:S.hoursWeek,1)+' h / week reported':'Start →',hColor:hoursDone?'#22d3a6':'#f4f5f8',hBorder:hoursDone?'#1f3a36':'#7c5cff',
+      rStatus:rateDone?'Done ✓ thanks':'Start →',rColor:rateDone?'#22d3a6':'#f4f5f8',rBorder:rateDone?'#1f3a36':hoursDone?'#7c5cff':'#2a3242',
+      summary:'Missions: hours '+(hoursDone?'✓':'—')+' · rating '+(rateDone?'✓':'—')};
+    const sector=mock&&pv==='hours'?'Digital PR':S.sector;const tasks=mock&&pv==='hours'?{'Updating PR tracking sheets':3,'Chasing placement status':1.5}:S.tasks;
+    const total=Object.values(tasks).reduce((a,b)=>a+b,0);const W=this.props.weeksPerYear??48;
+    const bump=(t,d)=>this.set(s=>({tasks:{...s.tasks,[t]:Math.max(0,Math.min(40,(s.tasks[t]||0)+d))}}));
+    const hr={stepN:sector?2:1,title:sector?sector:'Pick your department',pick:!sector,tasks:!!sector,
+      back:()=>{if(S.sector)this.set({sector:null,tasks:{}});else this.setState({view:'home'});},
+      sectors:SECTORS.map(n=>({name:n,bg:'#141821',border:'#2a3242',on:()=>this.set({sector:n,tasks:{},rateSector:S.rateSector||n})})),
+      list:(TASKS[sector]||[]).map(t=>{const val=tasks[t]||0;return {name:t,val:fmt(val,1)+'h',color:val?'#22d3a6':'#9aa3b5',dec:()=>bump(t,-.5),inc:()=>bump(t,.5)};}),
+      total:fmt(total,1),year:fmt(total*W),op:total>0?1:.45,
+      submit:()=>{if(!total||mock)return;this.post('/api/hours',{sector,tasks});const slay=Object.keys(tasks).some(t=>/sheet/i.test(t)&&tasks[t]>0);this.set({hoursDone:true,hoursWeek:total,view:'home'},()=>this.award(200,slay?'slayer':null));}};
+    const rs=mock&&pv==='rate'?'Content':(S.rateSector||S.sector);const rating=mock&&pv==='rate'?4:S.rating;
+    const rt={back:()=>this.setState({view:'home'}),op:rs&&rating?1:.45,
+      sectors:SECTORS.map(n=>({name:n,bg:n===rs?'#7c5cff':'#141821',border:n===rs?'#7c5cff':'#2a3242',on:()=>this.set({rateSector:n})})),
+      opts:RATE.map(o=>({n:o.n,label:o.label,bg:o.n===rating?'#1b1640':'#141821',border:o.n===rating?'#7c5cff':'#2a3242',numColor:o.n===rating?'#b9a8ff':'#f4f5f8',on:()=>this.set({rating:o.n})})),
+      submit:()=>{if(!rs||!rating||mock)return;this.post('/api/rate',{sector:rs,score:rating});this.set({rateDone:true,view:'home'},()=>this.showPop(null,null));}};
+    const dur=this.props.questionSeconds??30;const rem=mock?18:(this.qOpenedAt?Math.max(0,dur-(S.now-this.qOpenedAt)/1000):dur);
+    const qKey=mock?'commits':qid;const answered=mock?null:S.answered[qKey];const g=mock&&pv==='question'?'1500':S.guess;
+    const qv={text:QUESTIONS[qKey]||QUESTIONS.commits,secs:Math.ceil(rem),pct:(rem/dur*100).toFixed(1),barColor:rem<6?'#ff5c8a':'#7c5cff',input:answered==null,locked:answered!=null,
+      display:answered!=null?fmt(answered):(g?fmt(+g):'Your guess'),displayColor:g||answered!=null?'#f4f5f8':'#5b6477',op:g?1:.45,
+      submit:()=>{if(!g||mock)return;this.post('/api/guess',{qid:qKey,value:+g});this.set(s=>({answered:{...s.answered,[qKey]:+g},guess:''}));}};
+    const key=k=>()=>this.setState(s=>({guess:k==='⌫'?s.guess.slice(0,-1):k==='C'?'':(s.guess+k).replace(/^0+/,'').slice(0,7)}));
+    const keypad=['1','2','3','4','5','6','7','8','9','C','0','⌫'].map(k=>({label:k,on:key(k),ink:/\d/.test(k)?'#f4f5f8':'#9aa3b5'}));
+    const myVote=mock&&pv==='vote'?'c':S.voted.aidev;
+    const vt={note:myVote?'Vote in · +100. Watch the bars move.':'+100 for voting',noteColor:myVote?'#22d3a6':'#ffb547',
+      opts:VOTE_OPTS.map(o=>({k:o.k.toUpperCase(),label:o.label,bg:o.k===myVote?'#10231f':'#141821',border:o.k===myVote?'#22d3a6':'#2a3242',kBg:o.k===myVote?'#22d3a6':'#7c5cff',check:o.k===myVote?'✓':'',
+        on:()=>{if(myVote||mock)return;this.post('/api/vote',{option:o.k});this.set(s=>({voted:{...s.voted,aidev:o.k}}),()=>this.award(100,null));}}))};
+    const badgeGrid=Object.keys(BADGES).map(k=>({name:BADGES[k].name,color:badges.includes(k)?BADGES[k].color:'#2a3242',icon:iconURL(BADGES[k].icon,badges.includes(k)?BADGES[k].color:'#5b6477'),op:badges.includes(k)?1:.7}));
+    const fr=mock?3:rank;
+    const fn={rank:'#'+fr,label:fr<=3?'On the podium':fr<=10?'Top 10':'Nice run',color:fr<=3?'#7c5cff':'#f4f5f8',bank:fmt((st.hours&&st.hours.perYear)||0),
+      badges:badges.filter(b=>BADGES[b]).map(b=>({name:BADGES[b].name,color:BADGES[b].color,icon:iconURL(BADGES[b].icon,BADGES[b].color)}))};
+    const h=React.createElement;const P=S.pop;
+    const popEl=P?h('div',{key:P.id,onClick:()=>this.setState({pop:null}),style:{position:'absolute',inset:0,background:'rgba(5,6,10,.82)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:20,animation:'fadeIn .2s both'}},
+      h('div',{style:{background:'#141821',border:'2px solid '+(P.b?BADGES[P.b].color:'#7c5cff'),padding:'24px 22px',width:280,animation:'pop .5s cubic-bezier(.34,1.56,.64,1) both',display:'flex',flexDirection:'column',gap:12}},
+        P.b?h('div',{style:{width:84,height:84,background:BADGES[P.b].color,clipPath:'polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%)',position:'relative'}},h('div',{style:{position:'absolute',inset:4,background:'#0b0d12',clipPath:'polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%)',display:'flex',alignItems:'center',justifyContent:'center'}},h('img',{src:iconURL(BADGES[P.b].icon,BADGES[P.b].color),style:{width:40,height:40}}))):null,
+        h('div',{style:{fontSize:12,fontWeight:800,letterSpacing:'.14em',textTransform:'uppercase',color:P.b?BADGES[P.b].color:'#22d3a6'}},P.b?'Badge unlocked':P.pts?'Points':'Saved'),
+        h('div',{style:{fontSize:28,fontWeight:900,lineHeight:1.05,letterSpacing:'-.02em'}},P.b?BADGES[P.b].name:P.pts?'Nice.':'Thanks — counted.'),
+        P.pts?h('div',{style:{fontSize:40,fontWeight:900,color:'#ffb547'}},'+'+P.pts):null)):null;
+    const tabs=PREVIEWS.map(k=>({label:k==='live'?'Live flow':k[0].toUpperCase()+k.slice(1),bg:pv===k?'#7c5cff':'#141821',border:pv===k?'#7c5cff':'#2a3242',on:()=>this.setState({preview:k})}));
+    return {v,me,next,join,ms,hr,rt,qv,keypad,vt,badgeGrid,fn,popEl,tabs,wide:S.wide,hasHeader:view!=='join'&&view!=='question'&&view!=='vote',
+      frameW:S.wide?'375px':'480px',frameH:S.wide?'780px':'100vh',frameBorder:S.wide?'2px solid #232a38':'none',screenLabel:'Phone · '+view};
+  }
+}
+</script>
+</body>
+</html>

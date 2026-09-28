@@ -1,0 +1,679 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Five Levels</title>
+</head>
+<body>
+<template id="tpl">
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+html,body{margin:0;background:#05060a;color:#f4f5f8;font-family:Inter,system-ui,sans-serif;font-variant-numeric:tabular-nums;overflow:hidden}
+a{color:#22d3a6}a:hover{color:#7c5cff}
+button:focus-visible{outline:2px solid #7c5cff;outline-offset:2px}
+@keyframes pop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes cf{0%{transform:translate(-50%,-50%) rotate(0);opacity:1}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(var(--r));opacity:0}}
+@keyframes fadeOut{to{opacity:0;transform:scale(.96)}}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:1ms!important;animation-delay:0s!important;transition:none!important}}
+</style>
+</helmet>
+<div style="position:fixed;inset:0;background:#05060a;overflow:hidden">
+<div style="position:absolute;left:50%;top:50%;width:1600px;height:900px;margin-left:-800px;margin-top:-450px;transform:scale({{ scale }});transform-origin:center;background:#0b0d12;overflow:hidden">
+
+<sc-if value="{{ show.s1 }}" hint-placeholder-val="{{ true }}">
+<div data-screen-label="01 Title + QR" style="position:absolute;left:0;top:0;width:1600px;height:824px;padding:52px 72px 40px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:72px">
+  <div style="display:flex;flex-direction:column;min-width:0">
+    <div style="display:flex;align-items:center;gap:16px"><div style="width:14px;height:14px;background:#7c5cff"></div><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Hennessey Digital · Systems</div></div>
+    <div style="font-size:164px;font-weight:900;line-height:.9;letter-spacing:-.05em;margin-top:48px">Five levels.<br><span style="color:#7c5cff">One year.</span></div>
+    <div style="font-size:34px;font-weight:500;color:#aab2c2;margin-top:32px;max-width:780px;line-height:1.3;text-wrap:pretty">What Systems built, the hours it gave back, and the mistakes it stopped. Play along on your phone.</div>
+    <div style="margin-top:auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:2px solid #232a38">
+      <div style="padding:22px 16px 0 0"><div style="font-size:54px;font-weight:900;letter-spacing:-.03em;line-height:1">1,798</div><div style="font-size:20px;font-weight:600;color:#9aa3b5;margin-top:8px">commits</div></div>
+      <div style="padding:22px 16px 0 0"><div style="font-size:54px;font-weight:900;letter-spacing:-.03em;line-height:1">1,240</div><div style="font-size:20px;font-weight:600;color:#9aa3b5;margin-top:8px">pull requests merged</div></div>
+      <div style="padding:22px 16px 0 0"><div style="font-size:54px;font-weight:900;letter-spacing:-.03em;line-height:1">672</div><div style="font-size:20px;font-weight:600;color:#9aa3b5;margin-top:8px">features</div></div>
+      <div style="padding:22px 16px 0 0"><div style="font-size:54px;font-weight:900;letter-spacing:-.03em;line-height:1">35</div><div style="font-size:20px;font-weight:600;color:#9aa3b5;margin-top:8px">backend apps</div></div>
+      <div style="padding:22px 16px 0 0"><div style="font-size:54px;font-weight:900;letter-spacing:-.03em;line-height:1;color:#22d3a6">1</div><div style="font-size:20px;font-weight:600;color:#9aa3b5;margin-top:8px">AI bot teammate</div></div>
+    </div>
+  </div>
+  <div style="background:#141821;border:2px solid #232a38;padding:28px;display:flex;flex-direction:column;gap:20px;align-self:start">
+    <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:22px;font-weight:800;letter-spacing:.14em;text-transform:uppercase">Scan to join</div><div style="background:#ffb547;color:#0b0d12;font-size:20px;font-weight:900;padding:4px 10px">+100</div></div>
+    <div style="background:#ffffff;padding:18px;width:100%;box-sizing:border-box;aspect-ratio:1/1"><img src="{{ qrSrc }}" alt="Join QR" style="width:100%;height:100%;display:block;image-rendering:pixelated"></div>
+    <div style="font-size:20px;font-weight:600;color:#9aa3b5;word-break:break-all;line-height:1.3">{{ joinUrlShort }}</div>
+    <div style="border-top:2px solid #232a38;padding-top:18px;display:flex;align-items:baseline;gap:14px"><div style="font-size:88px;font-weight:900;line-height:1;letter-spacing:-.04em">{{ hud.players }}</div><div style="font-size:24px;font-weight:700;color:#9aa3b5">players in</div></div>
+    <div style="font-size:20px;font-weight:700;color:#ffb547">{{ earlyText }}</div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ show.s2 }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="02 Level map" style="position:absolute;left:0;top:0;width:1600px;height:824px;padding:52px 72px 40px;box-sizing:border-box;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:20px;padding-bottom:18px;border-bottom:2px solid #232a38"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Level map</div><div style="margin-left:auto;font-size:22px;font-weight:800;color:#9aa3b5">Level {{ level }} of 5</div></div>
+  <div style="font-size:88px;font-weight:900;letter-spacing:-.04em;line-height:1;margin-top:36px">Five presenters. Five levels.</div>
+  <div style="flex:1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px;margin-top:40px;min-height:0">
+    <sc-for list="{{ levels }}" as="lv" hint-placeholder-count="5">
+      <div style="background:{{ lv.bg }};border:2px solid {{ lv.border }};opacity:{{ lv.op }};box-shadow:{{ lv.glow }};display:flex;flex-direction:column;padding:24px;box-sizing:border-box;min-width:0">
+        <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:18px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;background:{{ lv.chipBg }};color:{{ lv.chipInk }};padding:6px 10px">{{ lv.chip }}</div><div style="font-size:34px;font-weight:900;color:#22d3a6">{{ lv.mark }}</div></div>
+        <div style="font-size:150px;font-weight:900;line-height:.85;letter-spacing:-.06em;margin-top:28px">{{ lv.num }}</div>
+        <div style="margin-top:auto;font-size:24px;font-weight:700;color:{{ lv.sub }}">{{ lv.who }}</div>
+        <div style="font-size:32px;font-weight:800;line-height:1.08;margin-top:8px;letter-spacing:-.02em;text-wrap:pretty">{{ lv.title }}</div>
+        <div style="font-size:20px;font-weight:700;color:{{ lv.sub }};margin-top:18px;padding-top:14px;border-top:2px solid {{ lv.rule }}">{{ lv.pu }}</div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ show.s3 }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="03 Level intro" style="position:absolute;left:0;top:0;width:1600px;height:824px;padding:52px 72px 40px;box-sizing:border-box;display:grid;grid-template-columns:600px minmax(0,1fr);gap:64px">
+  <div style="display:flex;flex-direction:column;justify-content:space-between;border-right:2px solid #232a38;padding-right:48px;min-width:0">
+    <div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Level</div>
+    <div style="font-size:440px;font-weight:900;line-height:.78;letter-spacing:-.07em;color:#7c5cff">{{ intro.num }}</div>
+    <div style="font-size:22px;font-weight:700;color:#9aa3b5">{{ intro.of }}</div>
+  </div>
+  <div style="display:flex;flex-direction:column;min-width:0">
+    <div style="display:flex;align-items:center;gap:18px"><div style="width:64px;height:64px;background:#141821;border:2px solid #7c5cff;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900">{{ intro.initial }}</div><div style="font-size:36px;font-weight:800">{{ intro.who }}</div></div>
+    <div style="font-size:108px;font-weight:900;line-height:.95;letter-spacing:-.045em;margin-top:36px;text-wrap:balance">{{ intro.title }}</div>
+    <div style="margin-top:auto">
+      <div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#9aa3b5;margin-bottom:14px">Power-ups unlocked</div>
+      <div style="display:flex;flex-direction:column;border-top:2px solid #232a38">
+        <sc-for list="{{ intro.cards }}" as="c" hint-placeholder-count="4">
+          <div style="display:flex;align-items:center;gap:18px;padding:13px 0;border-bottom:2px solid #232a38"><div style="width:18px;height:18px;background:{{ c.color }};flex:none"></div><div style="font-size:32px;font-weight:800;flex:1;min-width:0">{{ c.name }}</div><div style="font-size:20px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:{{ c.color }}">{{ c.rarityLabel }}</div></div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ show.s4 }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="04 Power-up cards" style="position:absolute;left:0;top:0;width:1600px;height:824px;padding:52px 72px 40px;box-sizing:border-box;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:20px;padding-bottom:18px;border-bottom:2px solid #232a38"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Level {{ level }} · Power-ups</div><div style="margin-left:auto;font-size:22px;font-weight:800;color:#9aa3b5">{{ pu.count }}</div></div>
+  <sc-if value="{{ pu.multi }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:1;display:flex;gap:20px;margin-top:40px;min-height:0">
+      <sc-for list="{{ pu.cards }}" as="c" hint-placeholder-count="4">
+        <div style="flex:1;min-width:0;background:#141821;border:2px solid {{ c.color }};box-shadow:{{ c.glow }};display:flex;flex-direction:column">
+          <div style="display:flex;justify-content:space-between;padding:14px 20px;background:{{ c.band }};color:{{ c.bandInk }};font-size:18px;font-weight:800;letter-spacing:.14em;text-transform:uppercase"><span>{{ c.rarityLabel }}</span><span>LV {{ c.lv }}</span></div>
+          <div style="padding:26px 24px;display:flex;flex-direction:column;gap:16px;flex:1">
+            <div style="font-size:18px;font-weight:700;color:#9aa3b5">{{ c.no }}</div>
+            <div style="font-size:38px;font-weight:800;line-height:1.05;letter-spacing:-.02em;text-wrap:balance">{{ c.name }}</div>
+            <div style="font-size:24px;font-weight:500;line-height:1.3;color:#c9cfdb;text-wrap:pretty">{{ c.effect }}</div>
+            <div style="margin-top:auto;border-top:2px solid #232a38;padding-top:16px;font-size:20px;font-weight:600;color:#9aa3b5">Built by <b style="color:#f4f5f8">{{ c.who }}</b></div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{ pu.single }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:grid;grid-template-columns:520px minmax(0,1fr);gap:72px;margin-top:40px;min-height:0">
+      <sc-for list="{{ pu.cards }}" as="c" hint-placeholder-count="1">
+        <div style="background:#141821;border:2px solid {{ c.color }};box-shadow:{{ c.glow }};display:flex;flex-direction:column">
+          <div style="display:flex;justify-content:space-between;padding:18px 24px;background:{{ c.band }};color:{{ c.bandInk }};font-size:22px;font-weight:900;letter-spacing:.16em;text-transform:uppercase"><span>{{ c.rarityLabel }}</span><span>LV {{ c.lv }}</span></div>
+          <div style="padding:32px;display:flex;flex-direction:column;gap:20px;flex:1">
+            <div style="font-size:20px;font-weight:700;color:#9aa3b5">{{ c.no }}</div>
+            <div style="font-size:88px;font-weight:900;line-height:.95;letter-spacing:-.04em">{{ c.name }}</div>
+            <div style="font-size:28px;font-weight:500;line-height:1.35;color:#c9cfdb;text-wrap:pretty">{{ c.effect }}</div>
+            <div style="margin-top:auto;border-top:2px solid #232a38;padding-top:18px;font-size:22px;font-weight:600;color:#9aa3b5">Built by <b style="color:#f4f5f8">{{ c.who }}</b></div>
+          </div>
+        </div>
+      </sc-for>
+      <div style="display:flex;flex-direction:column;justify-content:center;min-width:0">
+        <div style="font-size:24px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#ffb547">The one legendary drop this year</div>
+        <div style="font-size:120px;font-weight:900;line-height:.92;letter-spacing:-.05em;margin-top:24px">Built live.<br>On a stopwatch.</div>
+        <div style="font-size:32px;font-weight:500;color:#aab2c2;margin-top:32px;line-height:1.35;max-width:640px">Slack message in. Pull request out. You pick the change.</div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ show.s5 }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="05 Live question" style="position:absolute;left:0;top:0;width:1600px;height:824px;padding:52px 72px 40px;box-sizing:border-box;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:20px;padding-bottom:18px;border-bottom:2px solid #232a38"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Live question</div><div style="font-size:18px;font-weight:900;background:#ffb547;color:#0b0d12;padding:4px 10px">GUESS · 0–500 PTS</div><div style="margin-left:auto;font-size:22px;font-weight:800;color:#9aa3b5">Question {{ q.num }} of 3</div></div>
+  <div style="flex:1;display:grid;grid-template-columns:minmax(0,1fr) 440px;gap:64px;margin-top:40px;min-height:0">
+    <div style="display:flex;flex-direction:column;min-width:0">
+      <div style="font-size:88px;font-weight:900;line-height:1;letter-spacing:-.04em;text-wrap:balance">{{ q.text }}</div>
+      <div style="margin-top:auto;display:grid;grid-template-columns:1fr 1fr;border-top:2px solid #232a38">
+        <div style="padding-top:20px"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#9aa3b5">Answers in</div><div style="font-size:136px;font-weight:900;line-height:1;letter-spacing:-.05em;margin-top:8px">{{ q.answers }}</div></div>
+        <div style="padding:20px 0 0 32px;border-left:2px solid #232a38"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#9aa3b5">Room median</div><div style="font-size:136px;font-weight:900;line-height:1;letter-spacing:-.05em;margin-top:8px;color:#22d3a6">{{ q.median }}</div></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px">
+      <div style="position:relative;width:400px;height:400px;border-radius:50%;background:conic-gradient({{ q.ringColor }} {{ q.ringDeg }}deg, #1c2230 0)">
+        <div style="position:absolute;inset:22px;border-radius:50%;background:#0b0d12;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font-size:150px;font-weight:900;line-height:1;letter-spacing:-.05em">{{ q.secs }}</div><div style="font-size:22px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#9aa3b5;margin-top:6px">{{ q.ringLabel }}</div></div>
+      </div>
+      <div style="font-size:26px;font-weight:800;color:{{ q.statusColor }}">{{ q.status }}</div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ show.s6 }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="06 Reveal + podium" style="position:absolute;left:0;top:0;width:1600px;height:824px;padding:52px 72px 40px;box-sizing:border-box;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:20px;padding-bottom:18px;border-bottom:2px solid #232a38"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">The reveal</div><div style="margin-left:auto;font-size:22px;font-weight:800;color:#9aa3b5">{{ q.short }}</div></div>
+  <div style="flex:1;display:grid;grid-template-columns:minmax(0,1fr) 640px;gap:64px;margin-top:36px;min-height:0">
+    <div style="display:flex;flex-direction:column;min-width:0">
+      <div style="font-size:34px;font-weight:700;color:#aab2c2;line-height:1.25;text-wrap:balance">{{ q.text }}</div>
+      <div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6;margin-top:auto">Real answer</div>
+      <div style="font-size:280px;font-weight:900;line-height:.9;letter-spacing:-.06em;color:#22d3a6;margin-top:8px">{{ rv.actual }}</div>
+      <div style="display:flex;border-top:2px solid #232a38;margin-top:28px">
+        <div style="padding-top:18px;flex:1"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#9aa3b5">Room median</div><div style="font-size:64px;font-weight:900;line-height:1.1">{{ q.median }}</div></div>
+        <div style="padding:18px 0 0 28px;flex:1;border-left:2px solid #232a38"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#9aa3b5">Room was off by</div><div style="font-size:64px;font-weight:900;line-height:1.1;color:#ffb547">{{ rv.off }}</div></div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:end">
+      <sc-for list="{{ rv.podium }}" as="p" hint-placeholder-count="3">
+        <div style="display:flex;flex-direction:column;min-width:0">
+          <div style="font-size:18px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#7c5cff;min-height:24px">{{ p.tag }}</div>
+          <div style="width:72px;height:72px;background:{{ p.avColor }};color:#0b0d12;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;margin-top:8px">{{ p.glyph }}</div>
+          <div style="font-size:30px;font-weight:800;margin-top:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.name }}</div>
+          <div style="font-size:22px;font-weight:600;color:#9aa3b5">{{ p.line }}</div>
+          <div style="font-size:28px;font-weight:900;color:#ffb547;margin-top:4px;min-height:34px">{{ p.pts }}</div>
+          <div style="height:{{ p.h }}px;background:{{ p.bg }};border:2px solid {{ p.border }};margin-top:14px;padding:16px;box-sizing:border-box"><div style="font-size:96px;font-weight:900;line-height:.9;color:{{ p.rankInk }}">{{ p.rank }}</div></div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ show.s7 }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="07 AI Dev vote + stopwatch" style="position:absolute;left:0;top:0;width:1600px;height:824px;padding:52px 72px 40px;box-sizing:border-box;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:20px;padding-bottom:18px;border-bottom:2px solid #232a38"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Level 4 · AI Dev</div><div style="font-size:18px;font-weight:900;background:#ffb547;color:#0b0d12;padding:4px 10px">LEGENDARY</div><div style="margin-left:auto;display:flex;align-items:center;gap:12px"><div style="width:14px;height:14px;background:{{ ai.statusColor }}"></div><div style="font-size:22px;font-weight:800;color:{{ ai.statusColor }};text-transform:uppercase;letter-spacing:.1em">{{ ai.status }}</div></div></div>
+  <sc-if value="{{ ai.phaseVote }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:1;display:flex;flex-direction:column;margin-top:32px;min-height:0">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:32px"><div style="font-size:84px;font-weight:900;letter-spacing:-.04em;line-height:1">What should the AI build?</div><div style="flex:none"><div style="font-size:96px;font-weight:900;line-height:1;letter-spacing:-.04em">{{ ai.total }}</div><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#9aa3b5">votes</div></div></div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:space-around;margin-top:24px;border-top:2px solid #232a38">
+        <sc-for list="{{ ai.bars }}" as="b" hint-placeholder-count="4">
+          <div style="display:grid;grid-template-columns:84px minmax(0,1fr) 170px;gap:24px;align-items:center">
+            <div style="width:84px;height:84px;background:{{ b.color }};color:#0b0d12;font-size:48px;font-weight:900;display:flex;align-items:center;justify-content:center">{{ b.k }}</div>
+            <div style="min-width:0"><div style="font-size:30px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ b.label }}</div><div style="height:22px;background:#1c2230;margin-top:12px"><div style="height:100%;width:{{ b.w }}%;background:{{ b.color }};transition:width .6s cubic-bezier(.2,.8,.2,1)"></div></div></div>
+            <div style="font-size:72px;font-weight:900;letter-spacing:-.03em">{{ b.pct }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ ai.phaseClock }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;margin-top:32px;min-height:0">
+      <div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#9aa3b5">The room picked</div>
+      <div style="font-size:48px;font-weight:800;line-height:1.1;margin-top:10px;letter-spacing:-.02em">{{ ai.winner }}</div>
+      <div style="font-size:300px;font-weight:900;line-height:.9;letter-spacing:-.06em;margin-top:auto;color:{{ ai.clockColor }}">{{ ai.clock }}</div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid #232a38;margin-top:28px">
+        <div style="padding-top:18px;display:flex;gap:16px;align-items:baseline"><div style="font-size:22px;font-weight:900;color:#7c5cff">01</div><div style="font-size:34px;font-weight:800">Slack message</div></div>
+        <div style="padding:18px 0 0 24px;border-left:2px solid #232a38;display:flex;gap:16px;align-items:baseline"><div style="font-size:22px;font-weight:900;color:#7c5cff">02</div><div style="font-size:34px;font-weight:800">AI developer</div></div>
+        <div style="padding:18px 0 0 24px;border-left:2px solid #232a38;display:flex;gap:16px;align-items:baseline"><div style="font-size:22px;font-weight:900;color:#22d3a6">03</div><div style="font-size:34px;font-weight:800">Pull request</div></div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ show.s8 }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="08 Pain removed" style="position:absolute;left:0;top:0;width:1600px;height:824px;padding:52px 72px 40px;box-sizing:border-box;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:20px;padding-bottom:18px;border-bottom:2px solid #232a38"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Pain removed</div><div style="margin-left:auto;font-size:22px;font-weight:800;color:#9aa3b5">Reported live · {{ pain.people }} people</div></div>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:2px solid #232a38">
+    <div style="padding:20px 24px 20px 0;min-width:0"><div style="font-size:18px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Manual tasks retired</div><div style="font-size:84px;font-weight:900;line-height:1;letter-spacing:-.04em;margin-top:10px">{{ pain.retired }}</div></div>
+    <div style="padding:20px 24px;border-left:2px solid #232a38;min-width:0"><div style="font-size:18px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#7c5cff">Tool of the year</div><div style="font-size:52px;font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-top:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ pain.top }}</div></div>
+    <div style="padding:20px 0 20px 24px;border-left:2px solid #232a38;min-width:0"><div style="font-size:18px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#ffb547">Most relieved department</div><div style="font-size:52px;font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-top:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ pain.dept }}</div></div>
+  </div>
+  <div style="flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;margin-top:22px;min-height:0">
+    <div style="display:flex;flex-direction:column;min-width:0">
+      <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#7c5cff;padding-bottom:10px"><span>Tool of the year · votes</span><span style="color:#9aa3b5">{{ pain.votes }}</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between">
+        <sc-for list="{{ pain.tools }}" as="r"><div style="display:grid;grid-template-columns:250px minmax(0,1fr) 72px;gap:16px;align-items:center"><div style="font-size:22px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</div><div style="height:26px;background:#1c2230"><div style="height:100%;width:{{ r.w }}%;background:{{ r.color }};transition:width .6s cubic-bezier(.2,.8,.2,1)"></div></div><div style="font-size:24px;font-weight:900;text-align:right">{{ r.pct }}</div></div></sc-for>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;min-width:0">
+      <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#22d3a6;padding-bottom:10px"><span>Tasks retired by department</span><span style="color:#9aa3b5">people</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between">
+        <sc-for list="{{ pain.depts }}" as="r"><div style="display:grid;grid-template-columns:280px minmax(0,1fr) 70px;gap:16px;align-items:center"><div style="font-size:22px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</div><div style="min-width:0;display:flex;align-items:center;gap:12px"><div style="height:26px;background:#22d3a6;width:{{ r.w }}%;min-width:2px"></div><div style="font-size:22px;font-weight:900;white-space:nowrap">{{ r.val }}</div></div><div style="font-size:20px;font-weight:700;text-align:right;color:#9aa3b5">{{ r.sub }}</div></div></sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ show.s9 }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="09 Client impact" style="position:absolute;left:0;top:0;width:1600px;height:824px;padding:52px 72px 40px;box-sizing:border-box;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:20px;padding-bottom:18px;border-bottom:2px solid #232a38"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Client-facing impact</div><div style="margin-left:auto;font-size:22px;font-weight:800;color:#9aa3b5">Before → after</div></div>
+  <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:20px;margin-top:28px;min-height:0">
+    <sc-for list="{{ cl }}" as="m" hint-placeholder-count="4">
+      <div style="background:#141821;border:2px solid #232a38;padding:28px 32px;display:flex;flex-direction:column;min-width:0;min-height:0">
+        <div style="display:flex;justify-content:space-between;gap:20px;align-items:flex-start">
+          <div style="min-width:0"><div style="font-size:18px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5">{{ m.sub }}</div><div style="font-size:34px;font-weight:800;line-height:1.1;margin-top:6px;letter-spacing:-.01em">{{ m.label }}</div></div>
+          <div style="flex:none;background:{{ m.badgeBg }};color:{{ m.badgeInk }};border:2px {{ m.badgeLine }} #ffb547;font-size:24px;font-weight:900;padding:8px 14px;white-space:nowrap">{{ m.badge }}</div>
+        </div>
+        <div style="margin-top:auto;display:grid;grid-template-columns:minmax(0,1fr) 56px minmax(0,1.2fr);align-items:end;gap:12px">
+          <div style="min-width:0"><div style="font-size:18px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5;margin-bottom:8px">Before</div>
+            <sc-if value="{{ m.bFill }}" hint-placeholder-val="{{ false }}"><div style="display:inline-block;border:2px dashed #ffb547;color:#ffb547;font-size:44px;font-weight:900;padding:2px 14px">[FILL]</div></sc-if>
+            <sc-if value="{{ m.bHas }}" hint-placeholder-val="{{ false }}"><div style="font-size:64px;font-weight:900;color:#aab2c2;line-height:1;letter-spacing:-.03em">{{ m.bText }}</div></sc-if>
+          </div>
+          <div style="font-size:48px;font-weight:900;color:#5b6477;line-height:1">→</div>
+          <div style="min-width:0"><div style="font-size:18px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#22d3a6;margin-bottom:8px">After</div>
+            <sc-if value="{{ m.aFill }}" hint-placeholder-val="{{ false }}"><div style="display:inline-block;border:2px dashed #ffb547;color:#ffb547;font-size:44px;font-weight:900;padding:2px 14px">[FILL]</div></sc-if>
+            <sc-if value="{{ m.aHas }}" hint-placeholder-val="{{ false }}"><div style="font-size:88px;font-weight:900;color:#22d3a6;line-height:1;letter-spacing:-.04em">{{ m.aText }}</div></sc-if>
+            <sc-if value="{{ m.aPending }}" hint-placeholder-val="{{ false }}"><div style="display:inline-block;font-size:28px;font-weight:800;color:#22d3a6;border:2px solid #22d3a6;padding:10px 14px">Measured live on stage</div></sc-if>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ show.s10 }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="10 Quality Shield" style="position:absolute;left:0;top:0;width:1600px;height:824px;padding:52px 72px 36px;box-sizing:border-box;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:20px;padding-bottom:18px;border-bottom:2px solid #232a38"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Quality Shield · fewer mistakes reach the client</div><div style="margin-left:auto;font-size:22px;font-weight:800;color:#9aa3b5">{{ qs.count }}</div></div>
+  <div style="flex:1;display:grid;grid-template-columns:360px minmax(0,1fr);gap:56px;margin-top:22px;min-height:0">
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div style="width:360px;height:420px;clip-path:polygon(50% 0,100% 10%,100% 58%,50% 100%,0 58%,0 10%);background:#232a38;padding:44px 8px 110px;box-sizing:border-box;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,1fr);gap:6px">
+        <sc-for list="{{ qs.segs }}" as="g" hint-placeholder-count="8"><div style="background:{{ g.bg }};color:{{ g.ink }};display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:900;transition:background .4s,color .4s">{{ g.n }}</div></sc-for>
+      </div>
+      <div style="font-size:26px;font-weight:800;line-height:1.2">Time saved is half the story.<br><span style="color:#22d3a6">The other half is fewer mistakes.</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px;min-width:0;overflow:hidden">
+      <sc-for list="{{ qs.rows }}" as="r" hint-placeholder-count="8">
+        <div style="border:2px solid {{ r.border }};background:{{ r.bg }};padding:{{ r.pad }};opacity:{{ r.op }};min-width:0">
+          <div style="display:flex;align-items:center;gap:16px"><div style="width:30px;height:30px;background:{{ r.numBg }};color:{{ r.numInk }};font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;flex:none">{{ r.n }}</div><div style="font-size:{{ r.fs }}px;font-weight:800;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</div><div style="font-size:22px;font-weight:900;color:#22d3a6">{{ r.check }}</div></div>
+          <sc-if value="{{ r.active }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:24px;margin-top:12px;padding-left:46px">
+              <div><div style="font-size:16px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5">Prevents</div><div style="font-size:24px;font-weight:600;line-height:1.25;margin-top:6px">{{ r.prevents }}</div></div>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <sc-for list="{{ r.metrics }}" as="mt"><div><div style="font-size:18px;font-weight:700;color:#9aa3b5">{{ mt.label }}</div><div style="display:flex;align-items:center;gap:12px;margin-top:4px;flex-wrap:wrap"><sc-for list="{{ mt.parts }}" as="p"><sc-if value="{{ p.fill }}"><span style="border:2px dashed #ffb547;color:#ffb547;font-size:26px;font-weight:900;padding:0 10px">[FILL]</span></sc-if><sc-if value="{{ p.plain }}"><span style="font-size:36px;font-weight:900;color:{{ p.color }}">{{ p.text }}</span></sc-if><sc-if value="{{ p.arrow }}"><span style="font-size:28px;color:#5b6477;font-weight:900">→</span></sc-if></sc-for></div></div></sc-for>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ show.s11 }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="11 Boss fight" style="position:absolute;left:0;top:0;width:1600px;height:824px;padding:52px 72px 40px;box-sizing:border-box;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:20px;padding-bottom:18px;border-bottom:2px solid #232a38"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#ff5c8a">Final level · Boss fight</div><div style="margin-left:auto;font-size:22px;font-weight:800;color:#9aa3b5">Level 5 · Martin</div></div>
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:40px;margin-top:36px">
+    <div style="min-width:0"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#9aa3b5">Boss</div><div style="font-size:120px;font-weight:900;line-height:.92;letter-spacing:-.05em;margin-top:8px">Legacy Dashboard</div><div style="font-size:28px;font-weight:600;color:#aab2c2;margin-top:18px">Untouched since 2023. Its Google Business charts showed random numbers.</div></div>
+    <div style="flex:none"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#ff5c8a">HP</div><div style="font-size:160px;font-weight:900;line-height:.9;color:#ff5c8a;letter-spacing:-.05em">{{ boss.hp }}</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:36px;height:84px;background:#0f1219;padding:8px;border:2px solid #ff5c8a;box-sizing:border-box">
+    <sc-for list="{{ boss.chunks }}" as="c" hint-placeholder-count="5"><div style="background:{{ c.bar }};transition:background .35s"></div></sc-for>
+  </div>
+  <div style="flex:1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:20px;min-height:0">
+    <sc-for list="{{ boss.chunks }}" as="c" hint-placeholder-count="5"><div style="border-top:2px solid {{ c.line }};padding-top:16px;display:flex;flex-direction:column;gap:10px;min-width:0"><div style="font-size:18px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:{{ c.kColor }}">{{ c.kicker }}</div><div style="font-size:30px;font-weight:800;line-height:1.1;color:{{ c.ink }}">{{ c.name }}</div><div style="font-size:20px;font-weight:800;color:{{ c.stColor }};margin-top:auto">{{ c.status }}</div></div></sc-for>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ show.s12 }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="12 Final scoreboard" style="position:absolute;left:0;top:0;width:1600px;height:824px;padding:52px 72px 40px;box-sizing:border-box;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:20px;padding-bottom:18px;border-bottom:2px solid #232a38"><div style="font-size:20px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Final scoreboard</div><div style="margin-left:auto;font-size:22px;font-weight:800;color:#9aa3b5">Thanks for playing</div></div>
+  <div style="flex:1;display:grid;grid-template-columns:600px minmax(0,1fr) 360px;gap:40px;margin-top:28px;min-height:0">
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:end">
+      <sc-for list="{{ fin.podium }}" as="p" hint-placeholder-count="3">
+        <div style="display:flex;flex-direction:column;min-width:0">
+          <div style="font-size:18px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#7c5cff;min-height:24px">{{ p.tag }}</div>
+          <div style="width:72px;height:72px;background:{{ p.avColor }};color:#0b0d12;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;margin-top:8px">{{ p.glyph }}</div>
+          <div style="font-size:30px;font-weight:800;margin-top:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.name }}</div>
+          <div style="font-size:22px;font-weight:600;color:#9aa3b5">{{ p.line }}</div>
+          <div style="font-size:28px;font-weight:900;color:#ffb547;margin-top:4px;min-height:34px">{{ p.pts }}</div>
+          <div style="height:{{ p.h }}px;background:{{ p.bg }};border:2px solid {{ p.border }};margin-top:14px;padding:16px;box-sizing:border-box"><div style="font-size:96px;font-weight:900;line-height:.9;color:{{ p.rankInk }}">{{ p.rank }}</div></div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-direction:column;min-width:0;border-top:2px solid #232a38">
+      <sc-for list="{{ fin.rest }}" as="r" hint-placeholder-count="7">
+        <div style="display:grid;grid-template-columns:48px 44px minmax(0,1fr) auto;gap:16px;align-items:center;padding:12px 0;border-bottom:2px solid #232a38">
+          <div style="font-size:28px;font-weight:900;color:#9aa3b5">{{ r.rank }}</div>
+          <div style="width:44px;height:44px;background:{{ r.avColor }};color:#0b0d12;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900">{{ r.glyph }}</div>
+          <div style="font-size:28px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</div>
+          <div style="font-size:28px;font-weight:900">{{ r.pts }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-direction:column">
+      <div style="border-top:2px solid #232a38;padding:14px 0 18px"><div style="font-size:18px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#22d3a6">Tasks retired</div><div style="display:flex;align-items:baseline;gap:10px;margin-top:6px"><div style="font-size:72px;font-weight:900;line-height:1;letter-spacing:-.04em">{{ fin.bank }}</div><div style="font-size:22px;font-weight:700;color:#9aa3b5">tasks</div></div><div style="font-size:22px;font-weight:700;color:#7c5cff;margin-top:6px">by {{ hrs.people }} people</div></div>
+      <div style="border-top:2px solid #232a38;padding:14px 0 18px"><div style="font-size:18px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#22d3a6">Tool of the year</div><div style="font-size:40px;font-weight:900;line-height:1.05;margin-top:6px;letter-spacing:-.02em">{{ hud.tool }}</div><div style="font-size:22px;font-weight:700;color:#7c5cff;margin-top:6px">{{ hud.toolPct }} of the votes</div></div>
+      <div style="border-top:2px solid #232a38;padding:14px 0 18px;display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div><div style="font-size:18px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5">Points</div><div style="font-size:44px;font-weight:900;margin-top:6px">{{ fin.points }}</div></div>
+        <div><div style="font-size:18px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5">Badges</div><div style="font-size:44px;font-weight:900;margin-top:6px">{{ fin.badges }}</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<div style="position:absolute;left:0;right:0;bottom:0;height:76px;background:#0f1219;border-top:2px solid #232a38;display:grid;grid-template-columns:minmax(0,1fr) 360px 170px 250px">
+  <div style="display:flex;align-items:center;gap:20px;padding:0 28px;min-width:0">
+    <div style="font-size:15px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6;flex:none">Tasks retired</div>
+    <div style="flex:1;position:relative;height:42px;min-width:0">
+      <div style="position:absolute;left:0;right:0;top:6px;height:14px;background:#1c2230"><div style="height:100%;width:{{ hud.bankPct }}%;background:#22d3a6"></div></div>
+      <div style="position:absolute;left:20%;top:0;height:26px;width:2px;background:#f4f5f8"></div><div style="position:absolute;left:20%;top:26px;transform:translateX(-50%);font-size:13px;font-weight:800;color:#9aa3b5">30</div>
+      <div style="position:absolute;left:50%;top:0;height:26px;width:2px;background:#f4f5f8"></div><div style="position:absolute;left:50%;top:26px;transform:translateX(-50%);font-size:13px;font-weight:800;color:#9aa3b5">75</div>
+      <div style="position:absolute;right:0;top:0;height:26px;width:2px;background:#f4f5f8"></div><div style="position:absolute;right:0;top:26px;font-size:13px;font-weight:800;color:#9aa3b5">150</div>
+    </div>
+    <div style="display:flex;align-items:baseline;gap:6px;flex:none"><div style="font-size:34px;font-weight:900;letter-spacing:-.02em">{{ hud.bank }}</div><div style="font-size:15px;font-weight:700;color:#9aa3b5">tasks</div></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;padding:0 24px;border-left:2px solid #232a38">
+    <div style="font-size:15px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#7c5cff">Top tool</div><div style="flex:1;min-width:0;font-size:24px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ hud.tool }}</div><div style="font-size:24px;font-weight:900;color:#7c5cff">{{ hud.toolPct }}</div>
+  </div>
+  <div style="display:flex;align-items:baseline;justify-content:flex-start;gap:8px;padding:0 24px;border-left:2px solid #232a38;align-self:center"><div style="font-size:34px;font-weight:900">{{ hud.players }}</div><div style="font-size:15px;font-weight:700;color:#9aa3b5">players</div></div>
+  <div style="display:flex;align-items:center;gap:12px;padding:0 24px;border-left:2px solid #232a38">
+    <div style="font-size:15px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#9aa3b5">LV</div>
+    <div style="display:flex;gap:4px"><sc-for list="{{ hud.lvSegs }}" as="g" hint-placeholder-count="5"><div style="width:18px;height:18px;background:{{ g.bg }}"></div></sc-for></div>
+    <div style="margin-left:auto;font-size:13px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;border:2px solid {{ hud.modeColor }};color:{{ hud.modeColor }};padding:3px 8px">{{ hud.mode }}</div>
+  </div>
+</div>
+
+<div style="position:absolute;top:24px;right:24px;display:flex;flex-direction:column;gap:10px;z-index:40;align-items:flex-end;pointer-events:none">{{ toastEls }}</div>
+{{ celebEl }}
+
+<sc-if value="{{ ctl.open }}" hint-placeholder-val="{{ false }}">
+  <div style="position:absolute;left:0;right:0;top:0;background:rgba(11,13,18,.97);border-bottom:2px solid #7c5cff;padding:14px 20px;display:flex;flex-wrap:wrap;gap:12px 28px;z-index:50">
+    <sc-for list="{{ ctl.groups }}" as="g">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><div style="font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9aa3b5;margin-right:4px">{{ g.name }}</div>
+        <sc-for list="{{ g.btns }}" as="b"><button onClick="{{ b.on }}" style="font-family:inherit;font-size:15px;font-weight:700;padding:8px 12px;background:{{ b.bg }};color:{{ b.ink }};border:2px solid {{ b.border }};cursor:pointer;text-align:left" style-hover="border-color:#7c5cff">{{ b.label }}</button></sc-for>
+      </div>
+    </sc-for>
+    <div style="font-size:13px;font-weight:600;color:#9aa3b5;width:100%">← → slides · Space / ↓ next beat · ↑ back a beat · 1–5 level · C hide · F fullscreen</div>
+  </div>
+</sc-if>
+</div>
+</div>
+</template>
+<div id="app"></div>
+<script src="/morphdom.js"></script>
+<script src="/qrcode.js"></script>
+<script src="/dc-runtime.js"></script>
+<script>
+// Presenter key: open /deck?key=... once on the presenting laptop.
+const ADMIN_KEY = (() => {
+  const p = new URLSearchParams(location.search);
+  try {
+    if (p.get("key")) { localStorage.setItem("adminKey", p.get("key")); history.replaceState(null, "", location.pathname); }
+    return localStorage.getItem("adminKey") || "";
+  } catch (e) { return p.get("key") || ""; }
+})();
+const PROPS = { joinUrl: "", questionSeconds: 30, weeksPerYear: 48, forceDemo: new URLSearchParams(location.search).has("demo") };
+
+const RARITY={common:{label:'Common',color:'#8b93a7',band:'#232a38',ink:'#f4f5f8',glow:'none'},rare:{label:'Rare',color:'#22d3a6',band:'#22d3a6',ink:'#0b0d12',glow:'none'},legendary:{label:'Legendary',color:'#ffb547',band:'#ffb547',ink:'#0b0d12',glow:'0 0 0 6px rgba(255,181,71,.12), 0 30px 80px rgba(255,181,71,.18)'}};
+const LEVELS=[
+{n:1,who:'Taulant',title:'Goodbye, spreadsheets',cards:[
+ {name:'Digital PR Tracking',effect:'Retires the PR tracking spreadsheet',rarity:'rare'},
+ {name:'Brand Profiles',effect:"Every client's voice, facts and rules in one place",rarity:'rare'},
+ {name:'Review Removal',effect:'Removal requests tracked end to end, no sheet',rarity:'common'},
+ {name:'Recipe Card AI Agent',effect:'On-page recommendations, checked by a second AI',rarity:'rare'}]},
+{n:2,who:'Abenezer',title:'Monitoring nobody has to do',cards:[
+ {name:'GBP Monitor',effect:'Watches every Google Business Profile; an AI filter drops the noise',rarity:'rare'},
+ {name:'Backlink Gaps',effect:"Surfaces the links competitors have and clients don't",rarity:'common'},
+ {name:'Query Fan-Out',effect:'Maps the questions behind every search',rarity:'rare'}]},
+{n:3,who:'Hikmat',title:'The client, in numbers',cards:[
+ {name:'Executive Summary',effect:'Leads by channel, CRM leads, cost per lead and sentiment in one view',rarity:'rare'},
+ {name:'CRM Leads',effect:'Lead numbers read straight from the source',rarity:'common'},
+ {name:'Cost per Lead',effect:'Spend and leads, finally on the same page',rarity:'common'},
+ {name:'Brand Sentiment',effect:'What reviewers feel, tracked over time',rarity:'common'},
+ {name:'AI Assistant in Slack',effect:'Ask about any client, get the numbers back',rarity:'rare'},
+ {name:'Lead Center',effect:'67,300 leads and 7,250 signed cases across 16 firms. Every number clicks through to the leads.',rarity:'rare',who:'Blin'}]},
+{n:4,who:'Roma & Blin',title:'AI Dev',cards:[{name:'AI Dev',effect:'A Slack message spins up a copy of the client site; an AI developer makes the change and opens a pull request',rarity:'legendary'}]},
+{n:5,who:'Martin',title:'AI Writer & the boss fight',cards:[
+ {name:'AI Writer',effect:'Client-ready drafts, on brand from the first pass',rarity:'rare'},
+ {name:'Final QA Checklist',effect:'Every draft checked against its Brand Profile',rarity:'common'},
+ {name:'Required-field Guard',effect:'No AI step runs with missing legal or client data',rarity:'common'},
+ {name:'Real-data Charts',effect:'Random numbers out, real data in',rarity:'common'}]}];
+const TOOLS=[{id:'ai_writer',label:'AI Writer',sub:'Content'},{id:'ai_dev',label:'AI DEV',sub:'Web fixes'},{id:'lead_center',label:'Lead Center',sub:'Leads'},{id:'gbp_monitor',label:'GBP Monitor',sub:'Local'},{id:'recipe_card',label:'Recipe Card AI',sub:'SEO'},{id:'exec_summary',label:'Executive Summary',sub:'Client KPIs'},{id:'brand_profiles',label:'Brand Profiles',sub:'Brand'},{id:'slack_ai',label:'AI Assistant in Slack',sub:'Answers'}];
+const SECTORS=['SEO','Content','Web/WordPress','Digital PR','Link Building','Local/GBP','Paid Media','Account Management'];
+const EST_DEFAULT=[
+ {sector:'SEO',hoursPerWeek:null,drivers:['Query Fan-Out','Recipe Card AI']},
+ {sector:'Content',hoursPerWeek:null,drivers:['AI Writer','Brand Profiles']},
+ {sector:'Web/WordPress',hoursPerWeek:null,drivers:['AI Dev']},
+ {sector:'Digital PR',hoursPerWeek:null,drivers:['Digital PR Tracking']},
+ {sector:'Link Building',hoursPerWeek:null,drivers:['Backlink Gaps']},
+ {sector:'Local/GBP',hoursPerWeek:null,drivers:['GBP Monitor','Review Removal']},
+ {sector:'Paid Media',hoursPerWeek:null,drivers:['Executive Summary']},
+ {sector:'Account Management',hoursPerWeek:null,drivers:['Executive Summary','Slack AI Assistant']}];
+const CLIENT_DEFAULT=[
+ {id:'response',sub:'Client requests',label:'Time to first response',before:null,after:null},
+ {id:'ticket',sub:'Tickets',label:'Average resolution time',before:null,after:null},
+ {id:'aidev',sub:'AI Dev',label:'Small site change live on staging',before:null,after:'live'},
+ {id:'writer',sub:'AI Writer',label:'Client-ready content draft',before:null,after:null}];
+const QUALITY_DEFAULT=[
+ {name:'AI Writer Final QA + brand-compliance check',prevents:'Off-brand or incomplete drafts reaching the client',metrics:[{label:'Drafts approved on first review',before:null,after:null},{label:'Revision rounds per piece',before:null,after:null}]},
+ {name:'Required-field validation before any AI step',prevents:'Content generated with missing legal or client data',metrics:[{label:'Drafts blocked before generation',value:null}]},
+ {name:'Second AI agent QA-checks Recipe Cards',prevents:'Wrong on-page recommendations',metrics:[{label:'Issues caught before a strategist sees them',value:null}]},
+ {name:'AI noise filter on the GBP monitor',prevents:'Alert fatigue; real changes getting missed',metrics:[{label:'Alerts sent per 100 changes detected',value:null}]},
+ {name:'Lead data from BigQuery, validated side by side',prevents:'Clients seeing wrong lead numbers',metrics:[{label:'Discrepancies found and fixed',value:null}]},
+ {name:'Watchdogs + failed-crawl + workflow-error reports',prevents:'Jobs silently stuck for days',metrics:[{label:'Median time a stuck job goes unnoticed',before:null,after:null}]},
+ {name:'Audit trails on listing deletes & data exports',prevents:'"Who changed this?" investigations',metrics:[{label:'Metric to confirm',value:null}]},
+ {name:'Legacy random-number charts → real data',prevents:'Decisions made on fake numbers',metrics:[{label:'Of those charts now use real data',value:'100%'}]}];
+const BOSS=['Random charts → real data','One-click login to client sites','Client credentials checklist','Campaign updates',"What's next"];
+const QUESTIONS=[
+ {id:'commits',q:'How many commits did Systems push this year?',short:'Commits this year',actual:1798},
+ {id:'leads',q:'How many real leads does the Lead Center track?',short:'Leads in the Lead Center',actual:67300},
+ {id:'aidev_prs',q:'How many pull requests did AI DEV open from Sept 9 to 27?',short:'AI DEV pull requests',actual:897}];
+const VOTE_OPTS=[
+ {k:'a',label:'Add a "Free case review" button to the homepage hero'},
+ {k:'b',label:'Add an FAQ section to a practice-area page'},
+ {k:'c',label:'Show Google review stars in the site footer'},
+ {k:'d',label:'Add a click-to-call bar on mobile'}];
+const BADGES={slayer:{name:'Spreadsheet Slayer',color:'#22d3a6',icon:'sheet'},early:{name:'Early Bird',color:'#ffb547',icon:'sunrise'},oracle:{name:'Oracle',color:'#7c5cff',icon:'eye'},crowd:{name:'Crowd Whisperer',color:'#ff5c8a',icon:'users'},full:{name:'Full Run',color:'#22d3a6',icon:'flag'}};
+const ICONS={
+ sheet:'<rect width="18" height="18" x="3" y="3"/><path d="M3 9h18M3 15h18M9 9v12M15 9v12"/><path d="M2 2l20 20"/>',
+ sunrise:'<path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/>',
+ eye:'<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+ users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+ flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>'};
+const iconURL=(n,c)=>'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+ICONS[n]+'</svg>');
+const AVATARS=[{id:'a1',color:'#7c5cff',glyph:'▲'},{id:'a2',color:'#22d3a6',glyph:'●'},{id:'a3',color:'#ffb547',glyph:'■'},{id:'a4',color:'#ff5c8a',glyph:'◆'},{id:'a5',color:'#9d86ff',glyph:'✚'},{id:'a6',color:'#5ee6c3',glyph:'★'},{id:'a7',color:'#ffd08a',glyph:'⬢'},{id:'a8',color:'#ff8fb0',glyph:'◐'}];
+const NAMES=['Ana','Ben','Carla','Dev','Ella','Femi','Gabe','Hana','Ivo','Jade','Kofi','Lena','Marco','Nia','Omar','Pia','Quinn','Rosa','Sami','Tess','Uma','Vik','Wren','Xavi','Yara','Zane','Ada','Bo','Cruz','Dina','Eli','Faye','Gus','Hugo','Iris','Jon','Kai','Lua','Mei','Noor','Otto','Pax','Rhea','Seb','Tia','Ugo','Vera','Wes','Yuki','Zoe','Alba','Bram','Cleo','Dax','Esme','Finn','Gia','Hal','Ines','Jax','Kira','Leo','Mila','Nico','Opal','Raf','Sia','Teo','Una','Val','Wyn','Zia'];
+const SLIDES=['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12'];
+const SLIDE_LABELS=['Title','Map','Intro','Power-ups','Question','Reveal','AI Dev','Hours','Client','Quality','Boss','Final'];
+const STEPS=[
+ {s:'s1',lv:1,label:'Title',jump:'Title'},
+ {s:'s2',lv:1,label:'L1 map',jump:'L1'},{s:'s3',lv:1,label:'L1 intro'},{s:'s4',lv:1,label:'L1 power-ups'},
+ {s:'s5',lv:1,q:0,label:'Q1 commits'},{s:'s6',lv:1,q:0,label:'Q1 reveal'},
+ {s:'s2',lv:2,label:'L2 map',jump:'L2'},{s:'s3',lv:2,label:'L2 intro'},{s:'s4',lv:2,label:'L2 power-ups'},
+ {s:'s2',lv:3,label:'L3 map',jump:'L3'},{s:'s3',lv:3,label:'L3 intro'},{s:'s4',lv:3,label:'L3 power-ups'},
+ {s:'s5',lv:3,q:1,label:'Q2 Lead Center leads'},{s:'s6',lv:3,q:1,label:'Q2 reveal'},
+ {s:'s9',lv:3,label:'Client impact',jump:'Client'},
+ {s:'s2',lv:4,label:'L4 map',jump:'L4'},{s:'s3',lv:4,label:'L4 intro'},{s:'s4',lv:4,label:'L4 legendary'},
+ {s:'s7',lv:4,label:'AI Dev live',jump:'AI Dev'},
+ {s:'s5',lv:4,q:2,label:'Q3 AI DEV PRs'},{s:'s6',lv:4,q:2,label:'Q3 reveal'},
+ {s:'s2',lv:5,label:'L5 map',jump:'L5'},{s:'s3',lv:5,label:'L5 intro'},{s:'s4',lv:5,label:'L5 power-ups'},
+ {s:'s8',lv:5,label:'Pain removed',jump:'Pain'},{s:'s10',lv:5,label:'Quality Shield',jump:'Quality'},
+ {s:'s11',lv:5,label:'Boss fight',jump:'Boss'},{s:'s12',lv:6,label:'Final',jump:'Final'}];
+const fmt=(n,d=0)=>Number(n||0).toLocaleString('en-US',{maximumFractionDigits:d});
+const pad=n=>String(n).padStart(2,'0');
+const fmtClock=(ms,t)=>{ms=Math.max(0,ms);const m=Math.floor(ms/60000),s=Math.floor(ms/1000)%60,d=Math.floor(ms/100)%10;return pad(m)+':'+pad(s)+(t?'.'+d:'');};
+const fmtDur=m=>m<1?Math.round(m*60)+' s':m<60?Math.round(m)+' min':m<1440?(m/60).toFixed(1)+' h':(m/1440).toFixed(1)+' days';
+const scoreGuess=(v,a)=>Math.max(0,Math.round(500*(1-Math.abs(v-a)/a)));
+const badgeKey=b=>BADGES[b]?b:(Object.keys(BADGES).find(k=>BADGES[k].name.toLowerCase()===String(b).toLowerCase())||b);
+const avatarOf=id=>AVATARS.find(a=>a.id===id)||AVATARS[(String(id||'x').length)%AVATARS.length];
+
+class Component extends DCLogic {
+  state={slide:0,beat:0,ctl:false,qIdx:0,toasts:[],celeb:null,levelOverride:null,scale:1,st:null,qr:''};
+  _tw={};
+  live=false;
+  componentDidMount(){
+    try{const sv=JSON.parse(localStorage.getItem('hd-deck')||'{}');if(sv.slide!=null)this.setState({slide:sv.slide,beat:sv.beat||0,qIdx:sv.qIdx||0});}catch(e){}
+    this.reduced=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.onResize=()=>this.setState({scale:Math.min(innerWidth/1600,innerHeight/900)});this.onResize();addEventListener('resize',this.onResize);
+    this.onKey=this.onKey.bind(this);addEventListener('keydown',this.onKey);
+    this._skip=0;this.poll();this._poll=setInterval(()=>this.poll(),1500);
+    this._last=0;const loop=t=>{if(t-this._last>33&&this.needFrame()){this._last=t;this.forceUpdate();}this._raf=requestAnimationFrame(loop);};this._raf=requestAnimationFrame(loop);
+    this.makeQR();
+    setTimeout(()=>this.goTo(this.state.slide),0);
+  }
+  componentDidUpdate(pp){if(pp.joinUrl!==this.props.joinUrl)this.makeQR();}
+  componentWillUnmount(){removeEventListener('resize',this.onResize);removeEventListener('keydown',this.onKey);clearInterval(this._poll);cancelAnimationFrame(this._raf);}
+  save(){try{localStorage.setItem('hd-deck',JSON.stringify({slide:this.state.slide,beat:this.state.beat,qIdx:this.state.qIdx}));}catch(e){}}
+  joinUrl(){return this.props.joinUrl||location.origin+'/';}
+  makeQR(){if(window.qrcode){const q=qrcode(0,'M');q.addData(this.joinUrl());q.make();this.setState({qr:q.createDataURL(10,0)});}else setTimeout(()=>this.makeQR(),300);}
+  onKey(e){
+    const tg=e.target&&e.target.tagName;if(tg==='INPUT'||tg==='SELECT'||tg==='TEXTAREA')return;const k=e.key;
+    if(k==='ArrowRight'||k==='PageDown')this.go(1);
+    else if(k==='ArrowLeft'||k==='PageUp')this.go(-1);
+    else if(k===' '||k==='ArrowDown'){e.preventDefault();this.step(1);}
+    else if(k==='ArrowUp'){e.preventDefault();this.step(-1);}
+    else if(k==='c'||k==='C')this.setState(s=>({ctl:!s.ctl}));
+    else if(/^[1-5]$/.test(k))this.control('level',{level:+k});
+    else if(k==='f'||k==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();}
+  }
+  goTo(i){const n=Math.max(0,Math.min(STEPS.length-1,i));const st=STEPS[n];const p={slide:n,beat:0,levelOverride:null};if(st.q!=null)p.qIdx=st.q;this.setState(p,()=>this.save());if(st.lv!==this._lastLv){this._lastLv=st.lv;this.control('level',{level:st.lv});}}
+  go(d){this.goTo(this.state.slide+d);}
+  step(d){this.setState(s=>({beat:Math.max(0,Math.min(12,s.beat+d))}),()=>this.save());}
+  tw(key,target,dur){const now=performance.now();let t=this._tw[key];
+    if(!t){this._tw[key]={from:target,to:target,start:now,dur:0};return target;}
+    if(t.to!==target){const cur=this.twVal(t,now);const d=(this.reduced||document.hidden)?0:(dur||900);t=this._tw[key]={from:cur,to:target,start:now,dur:d};if(d){setTimeout(()=>this.forceUpdate(),d/2);setTimeout(()=>this.forceUpdate(),d+60);}}
+    return this.twVal(t,now);}
+  twVal(t,now){if(!t.dur)return t.to;const p=Math.min(1,(now-t.start)/t.dur);return t.from+(t.to-t.from)*(1-Math.pow(1-p,3));}
+  needFrame(){const n=performance.now();for(const k in this._tw){const t=this._tw[k];if(t.dur&&n<t.start+t.dur+50)return true;}const s=this.state.st;return !!(s&&((s.timer&&s.timer.startedAt&&!s.timer.stoppedAt)||s.guessOpen));}
+  async poll(){
+    if(!this.props.forceDemo&&this._skip<=0){try{const r=await fetch(this.props.apiUrl||'/api/state',{cache:'no-store'});if(r.ok){const j=await r.json();if(j&&j.hours){this.live=true;this.ingest(j);return;}}}catch(e){}if(this.props.forceDemo)this._skip=20;}
+    if(!this.props.forceDemo)return;this._skip--;this.live=false;if(!this.sim)this.sim=this.simInit();this.simTick(this.sim);this.ingest(this.snap());
+  }
+  snap(){return JSON.parse(JSON.stringify(this.sim));}
+  ingest(j){
+    const prev=this.state.st;
+    if(j.guessOpen&&!(prev&&prev.guessOpen))this.qOpenedAt=Date.now();
+    const cur={};(j.players||[]).forEach(p=>{cur[p.name]=(p.badges||[]).map(badgeKey);});
+    if(this._pb){const nt=[];for(const n in cur){const old=new Set(this._pb[n]||[]);cur[n].forEach(b=>{if(!old.has(b)&&BADGES[b])nt.push({id:Math.random().toString(36).slice(2),name:n,b});});}if(nt.length)this.pushToasts(nt.slice(0,3));}
+    this._pb=cur;
+    const py=(j.hours&&j.hours.perWeek)||0;const reached=[30,75,150].filter(m=>py>=m).pop()||0;
+    if(this._mil===undefined)this._mil=reached;else if(reached>this._mil){this._mil=reached;this.celebrate(reached);}
+    this.setState({st:j});
+  }
+  pushToasts(arr){this.setState(s=>({toasts:[...s.toasts,...arr].slice(-4)}));arr.forEach(t=>setTimeout(()=>this.setState(s=>({toasts:s.toasts.filter(x=>x.id!==t.id)})),4200));}
+  celebrate(m){const cols=['#7c5cff','#22d3a6','#ffb547','#ff5c8a'];const pieces=this.reduced?[]:Array.from({length:70},(_,i)=>{const a=Math.random()*Math.PI*2,r=300+Math.random()*520;return {dx:Math.cos(a)*r,dy:Math.sin(a)*r*.7+140,rot:Math.random()*720-360,c:cols[i%4],d:Math.random()*.15,w:8+Math.random()*10};});
+    const id=Date.now();this.setState({celeb:{id,m,pieces}});setTimeout(()=>this.setState(s=>s.celeb&&s.celeb.id===id?{celeb:null}:null),1550);}
+  testBadge(){const ps=(this.state.st&&this.state.st.players)||[];const p=ps[Math.floor(Math.random()*ps.length)]||{name:'Ana'};const ks=Object.keys(BADGES);this.pushToasts([{id:Math.random().toString(36).slice(2),name:p.name,b:ks[Math.floor(Math.random()*ks.length)]}]);}
+  control(action,x={}){
+    if(action==='level')this.setState({levelOverride:x.level});
+    if(action==='reset'){this.setState({levelOverride:null,toasts:[],beat:0});this._mil=undefined;this._pb=undefined;}
+    if(this.live||!this.props.forceDemo){fetch(this.props.controlUrl||'/api/control',{method:'POST',headers:{'content-type':'application/json','x-admin-key':ADMIN_KEY},body:JSON.stringify({action,...x})}).catch(()=>{});}
+    else{this.simControl(action,x);this.ingest(this.snap());}
+  }
+  simInit(){const s={hours:{participants:0,perWeek:0,perYear:0,fte:0,byTask:{},bySector:{}},vote:{open:false,counts:{a:0,b:0,c:0,d:0},total:0},guessOpen:null,guesses:{},timer:{startedAt:null,stoppedAt:null},players:[],level:1,quality:{bySector:{}}};
+    for(let i=0;i<31;i++)this.simJoin(s);for(let i=0;i<5;i++)this.simHours(s);for(let i=0;i<16;i++)this.simRate(s);return s;}
+  simJoin(s){const used=new Set(s.players.map(p=>p.name));const name=NAMES.find(n=>!used.has(n));if(!name)return;const p={name,avatar:AVATARS[s.players.length%AVATARS.length].id,points:100,badges:[]};if(s.players.length<10)p.badges.push('early');s.players.push(p);}
+  simHours(s){const pool=s.players.filter(p=>!p._h);if(!pool.length)return;const pl=pool[Math.floor(Math.random()*pool.length)];pl._h=true;pl.points+=200;
+    const sec=SECTORS[Math.floor(Math.random()*8)];const wk=Math.round((1+Math.random()*5)*2)/2;const b=s.hours.bySector[sec]||(s.hours.bySector[sec]={perWeek:0,perYear:0,participants:0});
+    b.perWeek+=wk;b.perYear=b.perWeek*48;b.participants++;s.hours.participants++;s.hours.perWeek+=wk;s.hours.perYear=s.hours.perWeek*48;s.hours.fte=s.hours.perYear/1880;if(Math.random()<.35)pl.badges.push('slayer');}
+  simRate(s){const pool=s.players.filter(p=>!p._r);if(!pool.length)return;const pl=pool[Math.floor(Math.random()*pool.length)];pl._r=true;const sec=SECTORS[Math.floor(Math.random()*8)];const r=Math.random();const sc=r<.45?5:r<.8?4:r<.95?3:2;
+    const q=s.quality.bySector[sec]||(s.quality.bySector[sec]={avg:0,count:0});q.avg=(q.avg*q.count+sc)/(q.count+1);q.count++;}
+  simTick(s){s.now=Date.now();
+    if(s.players.length<72&&Math.random()<.45)this.simJoin(s);
+    if(Math.random()<.5)this.simHours(s);
+    if(Math.random()<.35)this.simRate(s);if(Math.random()<.4){s.tools=s.tools||{counts:{},total:0};const k=TOOLS[Math.floor(Math.random()*TOOLS.length)].id;s.tools.counts[k]=(s.tools.counts[k]||0)+1;s.tools.total++;}
+    if(s.vote.open){const n=1+Math.floor(Math.random()*4);for(let i=0;i<n&&s.vote.total<s.players.length;i++){const r=Math.random();const k=r<.42?'a':r<.62?'b':r<.88?'c':'d';s.vote.counts[k]++;s.vote.total++;}}
+    if(s.guessOpen){const id=s.guessOpen;const g=s.guesses[id];const Q=QUESTIONS.find(q=>q.id===id);const pool=s.players.filter(p=>!g._by.some(x=>x.name===p.name));const n=Math.min(pool.length,1+Math.floor(Math.random()*4));
+      for(let i=0;i<n;i++){const p=pool.splice(Math.floor(Math.random()*pool.length),1)[0];g._by.push({name:p.name,value:Math.round(Q.actual*(0.35+Math.random()*1.3))});}
+      g.count=g._by.length;const v=g._by.map(x=>x.value).sort((a,b)=>a-b);g.median=v.length?v[Math.floor(v.length/2)]:null;}}
+  simControl(a,x){const s=this.sim;
+    if(a==='openQ'){s.guesses[x.id]={count:0,median:null,actual:null,closest:[],_by:[]};s.guessOpen=x.id;}
+    else if(a==='closeQ'){s.guessOpen=null;}
+    else if(a==='revealQ'){const g=s.guesses[x.id]||(s.guesses[x.id]={count:0,median:null,closest:[],_by:[]});s.guessOpen=null;const Q=QUESTIONS.find(q=>q.id===x.id);if(g.actual!=null)return;g.actual=Q.actual;
+      const ranked=g._by.map(b=>({...b,pts:scoreGuess(b.value,Q.actual)})).sort((p,q)=>q.pts-p.pts);
+      ranked.forEach(r=>{const p=s.players.find(p=>p.name===r.name);if(p){p.points+=r.pts;p._q=(p._q||0)+1;if(p._q>=3&&!p.badges.includes('full'))p.badges.push('full');}});
+      g.closest=ranked.slice(0,3).map(r=>({name:r.name,value:r.value,points:r.pts}));if(ranked[0]){const p=s.players.find(p=>p.name===ranked[0].name);if(p&&!p.badges.includes('oracle'))p.badges.push('oracle');}}
+    else if(a==='openVote'){s.vote.open=true;}
+    else if(a==='closeVote'){if(!s.vote.open)return;s.vote.open=false;const c=s.vote.counts;const win=Object.keys(c).reduce((m,k)=>c[k]>c[m]?k:m,'a');const share=s.vote.total?c[win]/s.vote.total:0;
+      s.players.slice(0,s.vote.total).forEach(p=>{p.points+=100;if(Math.random()<share&&!p.badges.includes('crowd'))p.badges.push('crowd');});}
+    else if(a==='startT'){s.timer={startedAt:Date.now(),stoppedAt:null};}
+    else if(a==='stopT'){if(s.timer.startedAt&&!s.timer.stoppedAt)s.timer.stoppedAt=Date.now();}
+    else if(a==='resetT'){s.timer={startedAt:null,stoppedAt:null};}
+    else if(a==='level'){s.level=x.level;}
+    else if(a==='reset'){this.sim=this.simInit();}}
+  podium(list,tag,hs){return [1,0,2].map(i=>{const p=list[i];const a=p?avatarOf(p.avatar):null;return {rank:String(i+1),h:hs[i],name:p?p.name:'—',line:p?p.line:'',pts:p?p.pts:'',tag:(i===0&&p)?tag:'',avColor:p?a.color:'#232a38',glyph:p?a.glyph:'?',bg:i===0?'#7c5cff':'#141821',border:i===0?'#7c5cff':'#232a38',rankInk:i===0?'#f4f5f8':'#9aa3b5'};});}
+  parts(m){const P=v=>v==null?{fill:true}:{plain:true,text:String(v),color:'#22d3a6'};if('value' in m)return [P(m.value)];const b=P(m.before);if(b.plain)b.color='#aab2c2';return [b,{arrow:true},P(m.after)];}
+  badgeTile(b,size){const B=BADGES[b];const h=React.createElement;const oct='polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%)';
+    return h('div',{style:{width:size,height:size,background:B.color,clipPath:oct,position:'relative',flex:'none'}},h('div',{style:{position:'absolute',inset:3,background:'#0b0d12',clipPath:oct,display:'flex',alignItems:'center',justifyContent:'center'}},h('img',{src:iconURL(B.icon,B.color),style:{width:size*.5,height:size*.5}})));}
+  renderVals(){
+    const s=this.state.st||{};const H=s.hours||{};const now=Date.now();const sl=this.state.slide,beat=this.state.beat;const W=this.props.weeksPerYear??48;
+    const STEP=STEPS[sl]||STEPS[0];const show={};SLIDES.forEach(k=>show[k]=STEP.s===k);
+    const level=Math.min(5,Math.max(1,+(this.state.levelOverride??STEP.lv)||1));
+    const players=(s.players||[]).slice().sort((a,b)=>(b.points||0)-(a.points||0));
+    const qb=(s.quality&&s.quality.bySector)||{};let qs_=0,qc=0;for(const k in qb){qs_+=(qb[k].avg||0)*(qb[k].count||0);qc+=qb[k].count||0;}const qAvg=qc?qs_/qc:null;
+    const bankV=this.tw('bank',H.perWeek||0,1400);
+    const hud={bank:fmt(bankV),bankPct:Math.min(100,bankV/150*100).toFixed(2),q:qAvg==null?'—':qAvg.toFixed(1),qSegs:[1,2,3,4,5].map(i=>({bg:qAvg!=null&&Math.round(qAvg)>=i?'#7c5cff':'#1c2230'})),players:fmt(players.length),lvSegs:[1,2,3,4,5].map(i=>({bg:i<level?'#22d3a6':i===level?'#7c5cff':'#1c2230'})),mode:this.live?'Live':'Demo',modeColor:this.live?'#22d3a6':'#ffb547'};
+    const levels=LEVELS.map(L=>{const done=L.n<level,cur=L.n===level,boss=L.n===5;return {num:'0'+L.n,who:L.who,title:L.title,pu:L.cards.length+' power-up'+(L.cards.length>1?'s':''),
+      bg:cur?'#7c5cff':done?'#141821':'#0f1219',border:cur?'#7c5cff':done?'#22d3a6':'#232a38',sub:cur?'#ece8ff':'#9aa3b5',rule:cur?'rgba(255,255,255,.35)':'#232a38',op:(done||cur)?1:.7,glow:cur?'0 0 0 8px rgba(124,92,255,.22)':'none',
+      chip:cur?'Now playing':done?'Cleared':boss?'Boss level':'Locked',chipBg:cur?'#0b0d12':done?'#22d3a6':boss?'#ff5c8a':'#232a38',chipInk:cur?'#f4f5f8':(done||boss)?'#0b0d12':'#9aa3b5',mark:done?'✓':''};});
+    const L=LEVELS[level-1];let ci=0;const cn={};LEVELS.forEach(l=>l.cards.forEach(c=>{cn[c.name]=++ci;}));
+    const cards=L.cards.map(c=>{const R=RARITY[c.rarity];return {name:c.name,effect:c.effect,who:c.who||L.who,lv:L.n,rarityLabel:R.label,color:R.color,band:R.band,bandInk:R.ink,glow:R.glow,no:'#'+pad(cn[c.name])+' / '+ci};});
+    const intro={num:'0'+level,who:L.who,initial:L.who[0],title:L.title,of:'of 05 · '+L.cards.length+' power-up'+(L.cards.length>1?'s':''),cards};
+    const pu={cards,multi:cards.length>1,single:cards.length===1,count:cards.length+' unlocked'};
+    const qid=typeof s.guessOpen==='string'?s.guessOpen:QUESTIONS[this.state.qIdx].id;const Q=QUESTIONS.find(x=>x.id===qid)||QUESTIONS[0];const g=(s.guesses||{})[qid]||{};
+    const open=!!s.guessOpen;const dur=this.props.questionSeconds??30;const rem=open&&this.qOpenedAt?Math.max(0,dur-(now-this.qOpenedAt)/1000):0;const revealed=g.actual!=null;const had=(g.count||0)>0||revealed;
+    const q={num:QUESTIONS.indexOf(Q)+1,text:Q.q,short:Q.short,answers:fmt(this.tw('ans'+qid,g.count||0,500)),median:g.median!=null?fmt(g.median):'—',
+      secs:open?Math.ceil(rem):had?0:dur,ringLabel:open?'seconds left':had?'Closed':'Ready',ringDeg:(open?rem/dur*360:had?0:360).toFixed(1),ringColor:open?(rem<6?'#ff5c8a':'#7c5cff'):'#3a4254',
+      status:open?'Answer on your phone now':revealed?'Revealed':had?'Answers locked · reveal next':'Waiting for the presenter',statusColor:open?'#22d3a6':had&&!revealed?'#ffb547':'#9aa3b5'};
+    const actT=this.tw('rv'+qid,(revealed&&show.s6)?g.actual:0,2200);
+    const rv={actual:revealed?fmt(actT):'?',off:revealed&&g.median!=null?Math.round(Math.abs(g.median-g.actual)/g.actual*100)+'%':'—',
+      podium:this.podium(revealed?(g.closest||[]).map(c=>({name:c.name,avatar:(players.find(p=>p.name===c.name)||{}).avatar,line:'guessed '+fmt(c.value),pts:'+'+fmt(c.points??scoreGuess(c.value,g.actual))})):[],'Oracle',[230,320,170])};
+    const V=s.vote||{counts:{},total:0};const vc=V.counts||{};const tot=V.total||Object.values(vc).reduce((a,b)=>a+b,0);const maxK=VOTE_OPTS.reduce((m,o)=>(vc[o.k]||0)>(vc[m]||0)?o.k:m,'a');
+    const T=s.timer||{};const el=T.startedAt?((T.stoppedAt||now)-T.startedAt):0;const running=!!T.startedAt&&!T.stoppedAt;
+    const ai={phaseVote:!T.startedAt,phaseClock:!!T.startedAt,total:fmt(tot),bars:VOTE_OPTS.map(o=>{const c=vc[o.k]||0;const p=tot?c/tot*100:0;return {k:o.k.toUpperCase(),label:o.label,w:p.toFixed(1),pct:Math.round(p)+'%',color:(tot&&o.k===maxK)?'#22d3a6':'#7c5cff'};}),
+      winner:tot?VOTE_OPTS.find(o=>o.k===maxK).label:'Pick pending',clock:fmtClock(el,true),clockColor:running?'#f4f5f8':'#22d3a6',
+      status:running?'Running':T.stoppedAt?'Pull request opened':V.open?'Voting open':'Voting closed',statusColor:running?'#ff5c8a':T.stoppedAt?'#22d3a6':V.open?'#22d3a6':'#9aa3b5'};
+    const est=(s.impact&&s.impact.sectors)||EST_DEFAULT;const known=est.filter(e=>typeof e.hoursPerWeek==='number');const emax=Math.max(1,...known.map(e=>e.hoursPerWeek));const estAll=known.length===est.length&&est.length>0;const estWeek=known.reduce((a,e)=>a+e.hoursPerWeek,0);
+    const BS=H.bySector||{};const lv=SECTORS.map(sec=>{const v=BS[sec];const wk=typeof v==='number'?v:(v&&v.perWeek)||0;const yr=v&&typeof v==='object'&&v.perYear!=null?v.perYear:wk*W;return {sector:sec,wk,yr};}).sort((a,b)=>b.wk-a.wk);const lmax=Math.max(1,...lv.map(r=>r.wk));
+    const hrs={weeks:W,estFill:!estAll,estHas:estAll,estYear:fmt(estWeek*W),people:fmt(H.participants||0),liveYear:fmt(this.tw('hy',show.s8?(H.perYear||0):0,1200)),fte:this.tw('fte',show.s8?(H.perYear||0)/1880:0,1200).toFixed(1),
+      est:est.slice().sort((a,b)=>(b.hoursPerWeek||0)-(a.hoursPerWeek||0)).map(e=>{const k=typeof e.hoursPerWeek==='number';return {sector:e.sector,drivers:(e.drivers||[]).join(' · '),val:k?fmt(e.hoursPerWeek,1)+' h':'[FILL]',valColor:k?'#f4f5f8':'#ffb547',w:k?(e.hoursPerWeek/emax*100).toFixed(1):100,barBg:k?'#ffb547':'transparent'};}),
+      live:lv.map(r=>{const t=this.tw('ls'+r.sector,show.s8?r.wk:0,900);return {sector:r.sector,w:(t/lmax*100).toFixed(1),val:fmt(t,1)+' h',sub:fmt(r.yr)+' h/yr'};})};
+    const TLc=(s.tools&&s.tools.counts)||{};const ttot=(s.tools&&s.tools.total)||0;const tr=TOOLS.map(t=>({name:t.label,n:TLc[t.id]||0})).sort((a,b)=>b.n-a.n);const tmax=Math.max(1,...tr.map(r=>r.n));
+const BSx=H.bySector||{};const dr=SECTORS.map(sec=>({name:sec,n:(BSx[sec]&&BSx[sec].perWeek)||0,p:(BSx[sec]&&BSx[sec].participants)||0})).sort((a,b)=>b.n-a.n);const dmax=Math.max(1,...dr.map(r=>r.n));
+const pain={people:fmt(H.participants||0),retired:fmt(this.tw('pr',show.s8?(H.perWeek||0):0,1200)),votes:fmt(ttot)+' votes',top:ttot?tr[0].name:'—',dept:dr[0].n?dr[0].name:'—',
+ tools:tr.map((r,i)=>({name:r.name,w:(this.tw('pt'+r.name,show.s8?r.n:0,900)/tmax*100).toFixed(1),pct:ttot?Math.round(r.n/ttot*100)+'%':'—',color:i===0&&r.n?'#7c5cff':'#3a3170'})),
+ depts:dr.map(r=>({name:r.name,w:(this.tw('pd'+r.name,show.s8?r.n:0,900)/dmax*100).toFixed(1),val:fmt(r.n),sub:fmt(r.p)}))};
+Object.assign(hud,{tool:ttot?tr[0].name:'—',toolPct:ttot?Math.round(tr[0].n/ttot*100)+'%':''});
+const cl=((s.impact&&s.impact.client)||CLIENT_DEFAULT).map((m,i)=>{let after=m.after,live=false,pending=false;
+      if(m.after==='live'){if(T.startedAt){after=el/60000;live=running;}else{after=null;pending=true;}}
+      const bT=m.before!=null?this.tw('cb'+i,show.s9?m.before:0,1400):0;const aT=after!=null?(live||m.after==='live'?after:this.tw('ca'+i,show.s9?after:0,1400)):0;
+      const pct=(m.before&&after!=null&&!live)?Math.round((1-after/m.before)*100):null;
+      return {sub:m.sub,label:m.label,bFill:m.before==null,bHas:m.before!=null,bText:fmtDur(bT),aFill:after==null&&!pending,aHas:after!=null,aPending:pending,aText:m.id==='aidev'?fmtClock(aT*60000,false):fmtDur(aT),
+        badge:pct!=null?pct+'% faster':live?'Live':'—% faster',badgeBg:pct!=null?'#ffb547':'transparent',badgeInk:pct!=null?'#0b0d12':'#ffb547',badgeLine:pct!=null?'solid':'dashed'};});
+    const QR=(s.impact&&s.impact.quality)||QUALITY_DEFAULT;const lit=show.s10?Math.min(QR.length,beat):0;
+    const qs={count:lit+' of '+QR.length+' safeguards up',
+      rows:QR.map((r,i)=>{const on=i<lit,act=i===lit-1;return {n:i+1,name:r.name,prevents:r.prevents,active:act,metrics:act?r.metrics.map(m=>({label:m.label,parts:this.parts(m)})):[],border:act?'#22d3a6':on?'#1f3a36':'#1c2230',bg:act?'#10231f':on?'#11161f':'transparent',op:on?1:.55,pad:act?'14px 16px':'5px 12px',fs:act?30:22,numBg:on?'#22d3a6':'#1c2230',numInk:on?'#0b0d12':'#9aa3b5',check:on&&!act?'✓':''};}),
+      segs:QR.slice(0,8).map((r,i)=>({n:i+1,bg:i<lit?'#22d3a6':'#141821',ink:i<lit?'#0b0d12':'#3a4254'})),
+      depts:SECTORS.map(sec=>{const x=qb[sec];const a=x&&x.count?x.avg:null;return {name:sec,avg:a==null?'—':a.toFixed(1),w:a==null?0:(a/5*100).toFixed(0),color:a==null?'#5b6477':'#f4f5f8'};})};
+    const hits=show.s11?Math.min(4,beat):0;
+    const boss={hp:this.tw('hp',100-hits*20,600).toFixed(0)+'%',chunks:BOSS.map((name,i)=>{const done=i<hits,last=i===4;return {kicker:last?'Last chunk':'Hit '+(i+1),name,bar:done?'#1c2230':(last&&hits>=4)?'#ffb547':'#ff5c8a',line:done?'#22d3a6':last?'#ffb547':'#232a38',kColor:done?'#22d3a6':last?'#ffb547':'#9aa3b5',ink:done||last?'#f4f5f8':'#aab2c2',status:done?'Migrated ✓':last?(hits>=4?'Round two':'Incoming'):'Incoming',stColor:done?'#22d3a6':last&&hits>=4?'#ffb547':'#5b6477'};})};
+    const fin={podium:this.podium(players.slice(0,3).map(p=>({name:p.name,avatar:p.avatar,line:(p.badges||[]).length+' badges',pts:fmt(p.points||0)+' pts'})),'Top score',[220,300,160]),
+      rest:players.slice(3,10).map((p,i)=>{const a=avatarOf(p.avatar);return {rank:i+4,name:p.name,pts:fmt(p.points||0),glyph:a.glyph,avColor:a.color};}),
+      points:fmt(players.reduce((a,p)=>a+(p.points||0),0)),badges:fmt(players.reduce((a,p)=>a+(p.badges||[]).length,0)),bank:fmt(H.perWeek||0),fte:''};
+    const h=React.createElement;
+    const toastEls=this.state.toasts.map(t=>{const B=BADGES[t.b];return h('div',{key:t.id,style:{display:'flex',alignItems:'center',gap:16,background:'#141821',border:'2px solid '+B.color,padding:'12px 22px 12px 12px',animation:'pop .5s cubic-bezier(.34,1.56,.64,1) both',boxShadow:'0 20px 50px rgba(0,0,0,.5)'}},this.badgeTile(t.b,60),
+      h('div',null,h('div',{style:{fontSize:15,fontWeight:800,letterSpacing:'.14em',textTransform:'uppercase',color:B.color}},'Achievement · '+t.name),h('div',{style:{fontSize:28,fontWeight:800}},B.name)));});
+    const c=this.state.celeb;
+    const celebEl=c?h('div',{key:c.id,style:{position:'absolute',inset:0,zIndex:45,pointerEvents:'none',display:'flex',alignItems:'center',justifyContent:'center'}},
+      ...c.pieces.map((p,i)=>h('div',{key:i,style:{position:'absolute',left:'50%',top:'45%',width:p.w,height:p.w*1.5,background:p.c,'--dx':p.dx+'px','--dy':p.dy+'px','--r':p.rot+'deg',animation:'cf 1.4s cubic-bezier(.15,.7,.3,1) '+p.d+'s both'}})),
+      h('div',{style:{background:'#7c5cff',padding:'32px 44px',animation:'pop .5s cubic-bezier(.34,1.56,.64,1) both, fadeOut .25s ease-in 1.25s forwards',boxShadow:'0 30px 90px rgba(0,0,0,.6)'}},
+        h('div',{style:{fontSize:22,fontWeight:800,letterSpacing:'.16em',textTransform:'uppercase',color:'#0b0d12'}},'Milestone unlocked'),
+        h('div',{style:{fontSize:120,fontWeight:900,lineHeight:1,letterSpacing:'-.05em',marginTop:8}},fmt(c.m)),
+        h('div',{style:{fontSize:32,fontWeight:800}},'manual tasks retired by the room'))):null;
+    const B=(label,on,active,danger)=>({label,on,bg:active?'#7c5cff':danger?'#2a1520':'#1c2230',ink:danger?'#ff5c8a':'#f4f5f8',border:active?'#7c5cff':danger?'#ff5c8a':'#2a3242'});
+    const ctl={open:this.state.ctl,groups:[
+      {name:'Slide',btns:[B('◀',()=>this.go(-1)),B((sl+1)+'/'+STEPS.length+' · '+STEP.label,null,true),B('▶',()=>this.go(1)),B('Beat −',()=>this.step(-1)),B('Beat '+beat+' +',()=>this.step(1))]},
+      {name:'Go to',btns:STEPS.map((x,i)=>x.jump?B(x.jump,()=>this.goTo(i),i===sl):null).filter(Boolean)},
+      {name:'Level',btns:[1,2,3,4,5].map(n=>B(String(n),()=>this.control('level',{level:n}),n===level)).concat([B('Final (phones)',()=>this.control('level',{level:6}),(+(s.level)||0)>=6)])},
+      {name:'Question',btns:[...QUESTIONS.map((x,i)=>B('Q'+(i+1),()=>this.setState({qIdx:i},()=>this.save()),qid===x.id)),B('Open',()=>this.control('openQ',{id:qid}),open),B('Close',()=>this.control('closeQ',{id:qid})),B('Reveal',()=>this.control('revealQ',{id:qid}),revealed)]},
+      {name:'Vote',btns:[B('Open',()=>this.control('openVote'),!!V.open),B('Close',()=>this.control('closeVote'))]},
+      {name:'Stopwatch',btns:[B('Start',()=>this.control('startT'),running),B('Stop',()=>this.control('stopT')),B('Reset',()=>this.control('resetT'))]},
+      {name:'Test',btns:[B('Milestone',()=>this.celebrate(this._mil||1000)),B('Badge',()=>this.testBadge())]},
+      {name:'',btns:[B('Reset all',()=>{if(window.confirm('Reset game state?'))this.control('reset');},false,true)]}]};
+    let short='';try{const u=new URL(this.joinUrl());short=u.host+decodeURIComponent(u.pathname);}catch(e){short=this.joinUrl();}
+    return {scale:this.state.scale,show,level,hud,levels,intro,pu,q,rv,ai,hrs,pain,cl,qs,boss,fin,toastEls,celebEl,ctl,
+      qrSrc:this.state.qr||'data:image/gif;base64,R0lGODlhAQABAAAAACw=',joinUrlShort:short,
+      earlyText:players.length<10?'Early Bird badge: '+(10-players.length)+' spots left':'All 10 Early Bird badges claimed'};
+  }
+}
+
+DC.mount(Component, document.getElementById("tpl"), document.getElementById("app"), PROPS);
+</script>
+</body>
+</html>
