@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Five Levels Run Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700&display=swap">
+<style>
+  :root {
+    --bg: #f4f4f8; --panel: #ffffff; --line: #dcdde6; --ink: #151821; --muted: #5d6475;
+    --accent: #5b3fe0; --live: #0c8f6d; --warn: #a8650c; --warn-bg: #fff4e0; --key-bg: #eceaf9;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b0d12; --panel: #141821; --line: #262c3b; --ink: #f4f5f8; --muted: #9aa3b5;
+      --accent: #9d86ff; --live: #22d3a6; --warn: #ffb547; --warn-bg: #2a2112; --key-bg: #221d3d;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b0d12; --panel: #141821; --line: #262c3b; --ink: #f4f5f8; --muted: #9aa3b5;
+    --accent: #9d86ff; --live: #22d3a6; --warn: #ffb547; --warn-bg: #2a2112; --key-bg: #221d3d;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font: 15px/1.5 Inter, system-ui, -apple-system, sans-serif; }
+  .wrap { max-width: 980px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 64px; display: grid; gap: 28px; }
+  h1 { font-size: clamp(30px, 6vw, 48px); line-height: 1; letter-spacing: -.035em; margin: 0; font-weight: 900; text-wrap: balance; }
+  h2 { font-size: 22px; margin: 0; font-weight: 800; letter-spacing: -.01em; text-wrap: balance; }
+  .eyebrow { font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--live); }
+  .lede { color: var(--muted); max-width: 68ch; margin: 8px 0 0; }
+  kbd, .btn { font: 700 12.5px/1 "JetBrains Mono", ui-monospace, monospace; background: var(--key-bg); color: var(--accent); border: 1.5px solid var(--accent); padding: 3px 6px; white-space: nowrap; }
+  .btn { color: var(--ink); border-color: var(--line); background: var(--panel); }
+  .urls { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+  .url { background: var(--panel); border: 2px solid var(--line); padding: 14px 16px; display: grid; gap: 6px; }
+  .url code { font: 600 13px "JetBrains Mono", ui-monospace, monospace; color: var(--accent); word-break: break-all; }
+  .url span { color: var(--muted); font-size: 14px; }
+  .check { display: grid; gap: 0; border-top: 2px solid var(--line); margin: 0; padding: 0; list-style: none; counter-reset: c; }
+  .check li { display: grid; grid-template-columns: 28px 1fr; gap: 12px; padding: 11px 0; border-bottom: 2px solid var(--line); }
+  .check li::before { counter-increment: c; content: counter(c); font-weight: 900; color: var(--accent); }
+  .level { display: grid; gap: 10px; }
+  .level-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; padding-bottom: 8px; border-bottom: 2px solid var(--line); }
+  .level-head b { font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+  .level-head span { color: var(--muted); font-size: 14px; }
+  .step { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 4px 16px; padding: 14px 16px; background: var(--panel); border: 2px solid var(--line); }
+  .step.act { border-color: var(--accent); }
+  .num { grid-row: span 4; font: 900 26px/1 Inter, system-ui, sans-serif; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .step.act .num { color: var(--accent); }
+  .step h3 { margin: 0; font-size: 17px; font-weight: 800; }
+  .row { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 10px; font-size: 14.5px; }
+  .row > b { font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+  .say { color: var(--muted); font-style: italic; }
+  .warn { background: var(--warn-bg); border: 2px dashed var(--warn); color: var(--ink); padding: 12px 14px; }
+  .warn b { color: var(--warn); }
+  table { border-collapse: collapse; width: 100%; min-width: 520px; }
+  .scroll { overflow-x: auto; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 2px solid var(--line); vertical-align: top; font-size: 14px; }
+  th { font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  @media (max-width: 560px) {
+    .step { grid-template-columns: 1fr; }
+    .num { grid-row: auto; font-size: 20px; }
+    .row { grid-template-columns: 1fr; gap: 2px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">HenneHuddle · Systems team · Sep 28</div>
+    <h1>Five Levels Run Sheet</h1>
+    <p class="lede">Every screen of the talk in order: what the room sees, what phones show, and what the person on the laptop presses. Keep it open on a second screen.</p>
+  </header>
+
+  <section class="urls" aria-label="Links">
+    <div class="url"><b>Phones (the QR on screen 1)</b><code>hd-showcase.martin-b1c.workers.dev</code><span>Nothing to install, no login.</span></div>
+    <div class="url"><b>Projector laptop</b><code>hd-showcase.martin-b1c.workers.dev/deck</code><span>Open once with <code>?key=…</code> on this laptop so the presenter bar works.</span></div>
+    <div class="url"><b>Rehearsal only</b><code>hd-showcase.martin-b1c.workers.dev/deck?demo</code><span>Fake players. Controls don't reach phones.</span></div>
+  </section>
+
+  <section class="level">
+    <h2>Before you start</h2>
+    <ol class="check">
+      <li><span>Open the deck on the projector laptop. The chip at the bottom right must say <b>LIVE</b>; <b>DEMO</b> means <code>?demo</code> is in the URL.</span></li>
+      <li><span>Press <kbd>C</kbd> and click <span class="btn">Reset all</span>. The deck jumps to the title and every phone goes back to "Join the game".</span></li>
+      <li><span>Press <kbd>F</kbd> for fullscreen. If you share the screen, click once inside the deck so the keys reach it.</span></li>
+      <li><span>Scan the QR with your own phone to check it loads on the room's wifi.</span></li>
+    </ol>
+  </section>
+
+  <section class="level">
+    <h2>Controls</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Key or button</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>→</kbd> <kbd>PageDown</kbd></td><td>Next step. A slide clicker works too. The level changes by itself, on screen and on phones.</td></tr>
+          <tr><td><kbd>←</kbd></td><td>Previous step.</td></tr>
+          <tr><td><kbd>Space</kbd></td><td>Next beat, only on Quality Shield and the boss fight. It never changes the slide.</td></tr>
+          <tr><td><kbd>C</kbd></td><td>Presenter bar. Shows the current step, e.g. "13/28 · Q2 Lead Center leads".</td></tr>
+          <tr><td><span class="btn">Question</span> Open · Close · Reveal</td><td>The live guesses. The question matches the step you're on.</td></tr>
+          <tr><td><span class="btn">Vote</span> Open · Close</td><td>The AI Dev vote. Not the same Open/Close as Question.</td></tr>
+          <tr><td><span class="btn">Stopwatch</span> Start · Stop</td><td>The AI Dev timer.</td></tr>
+          <tr><td><span class="btn">Go to</span> Title · L1–L5 · Client · AI Dev · Pain · Quality · Boss · Final</td><td>Jump when you get lost.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="level">
+    <div class="level-head"><b>Level 1</b><span>Taulant · Goodbye, spreadsheets</span></div>
+    <div class="step act"><div class="num">1</div><h3>Title + QR</h3>
+      <div class="row"><b>Room sees</b><span>"Five levels. One year.", the year in numbers, a big QR and the live player count.</span></div>
+      <div class="row"><b>Phones</b><span>Join (name + avatar, +100). Then two missions: tick the manual work they don't miss (+200) and vote Tool of the year (+100).</span></div>
+      <div class="row"><b>You</b><span>Read the kick-off, then wait 1–2 minutes while people join and do both missions. Watch the "Tasks retired" bar at the bottom fill up.</span></div>
+    </div>
+    <div class="step"><div class="num">2</div><h3>Level map</h3><div class="row"><b>You</b><span><kbd>→</kbd> Five presenters, five levels. Level 1 is "Now playing".</span></div></div>
+    <div class="step"><div class="num">3</div><h3>Level 1 intro</h3><div class="row"><b>You</b><span><kbd>→</kbd> Taulant takes over.</span></div></div>
+    <div class="step"><div class="num">4</div><h3>Level 1 power-ups</h3><div class="row"><b>Room sees</b><span>Digital PR Tracking, Brand Profiles, Review Removal, Recipe Card AI Agent.</span></div><div class="row"><b>You</b><span><kbd>→</kbd> when Taulant is done.</span></div></div>
+    <div class="step act"><div class="num">5</div><h3>Question 1 · Commits this year</h3>
+      <div class="row"><b>You</b><span><kbd>C</kbd> → <span class="btn">Question · Open</span>. A 30-second ring starts. When the answers stop coming in, <span class="btn">Close</span>.</span></div>
+      <div class="row"><b>Phones</b><span>Switch to the question on their own: keypad, then "Lock in guess".</span></div>
+      <div class="row"><b>Say</b><span class="say">"How many commits did we push this year? Closest guess wins up to 500 points."</span></div>
+    </div>
+    <div class="step act"><div class="num">6</div><h3>Reveal</h3>
+      <div class="row"><b>You</b><span><span class="btn">Reveal</span>. The real number rolls up, then the podium with points. Closest gets the Oracle badge.</span></div>
+    </div>
+  </section>
+
+  <section class="level">
+    <div class="level-head"><b>Level 2</b><span>Abenezer · Monitoring nobody has to do</span></div>
+    <div class="step"><div class="num">7–9</div><h3>Map, intro, power-ups</h3><div class="row"><b>Room sees</b><span>GBP Monitor, Backlink Gaps, Query Fan-Out.</span></div><div class="row"><b>You</b><span><kbd>→</kbd> through the three screens.</span></div></div>
+  </section>
+
+  <section class="level">
+    <div class="level-head"><b>Level 3</b><span>Hikmat · The client, in numbers</span></div>
+    <div class="step"><div class="num">10–12</div><h3>Map, intro, power-ups</h3><div class="row"><b>Room sees</b><span>Executive Summary, CRM Leads, Cost per Lead, Brand Sentiment, AI Assistant in Slack, and Lead Center (built by Blin).</span></div><div class="row"><b>You</b><span><kbd>→</kbd></span></div></div>
+    <div class="step act"><div class="num">13</div><h3>Question 2 · Leads in the Lead Center</h3><div class="row"><b>You</b><span><span class="btn">Question · Open</span>, then <span class="btn">Close</span>.</span></div></div>
+    <div class="step act"><div class="num">14</div><h3>Reveal</h3><div class="row"><b>You</b><span><span class="btn">Reveal</span>.</span></div></div>
+    <div class="step"><div class="num">15</div><h3>Client-facing impact</h3><div class="row"><b>Room sees</b><span>Before → after for first response, tickets, AI Dev and AI Writer. Amber [FILL] boxes are numbers we're still measuring: say so.</span></div><div class="row"><b>You</b><span><kbd>→</kbd></span></div></div>
+  </section>
+
+  <section class="level">
+    <div class="level-head"><b>Level 4</b><span>Roma &amp; Blin · AI Dev</span></div>
+    <div class="step"><div class="num">16–18</div><h3>Map, intro, legendary card</h3><div class="row"><b>Room sees</b><span>The one legendary drop: "Built live. On a stopwatch."</span></div><div class="row"><b>You</b><span><kbd>→</kbd></span></div></div>
+    <div class="step act"><div class="num">19</div><h3>AI Dev live: vote + stopwatch</h3>
+      <div class="row"><b>You</b><span><span class="btn">Vote · Open</span>. When the bars settle, <span class="btn">Vote · Close</span>. The screen shows the winner.</span></div>
+      <div class="row"><b>Then</b><span>Roma or Blin sends the winning change in Slack; you click <span class="btn">Stopwatch · Start</span> at the same time, and <span class="btn">Stop</span> when the pull request exists.</span></div>
+      <div class="row"><b>Phones</b><span>Vote screen with four options (+100). Voters of the winner get Crowd Whisperer.</span></div>
+    </div>
+    <div class="step act"><div class="num">20</div><h3>Question 3 · AI DEV pull requests, Sept 9–27</h3><div class="row"><b>You</b><span><span class="btn">Question · Open</span>, then <span class="btn">Close</span>.</span></div></div>
+    <div class="step act"><div class="num">21</div><h3>Reveal</h3><div class="row"><b>You</b><span><span class="btn">Reveal</span>. Anyone who answered all three gets Full Run.</span></div></div>
+  </section>
+
+  <section class="level">
+    <div class="level-head"><b>Level 5</b><span>Martin · AI Writer &amp; the boss fight</span></div>
+    <div class="step"><div class="num">22–24</div><h3>Map, intro, power-ups</h3><div class="row"><b>Room sees</b><span>AI Writer, Final QA Checklist, Required-field Guard, Real-data Charts.</span></div><div class="row"><b>You</b><span><kbd>→</kbd></span></div></div>
+    <div class="step act"><div class="num">25</div><h3>Pain removed</h3>
+      <div class="row"><b>Room sees</b><span>Manual tasks retired, Tool of the year, the most relieved department, the tool ranking and tasks retired per department. All from their phones.</span></div>
+      <div class="row"><b>Say</b><span class="say">"We didn't give you free time. We took repetitive work off your plate so your time goes to work that matters."</span></div>
+    </div>
+    <div class="step act"><div class="num">26</div><h3>Quality Shield</h3><div class="row"><b>You</b><span><kbd>Space</kbd> up to 8 times. Each press lights one safeguard and shows its numbers. Then <kbd>→</kbd>.</span></div></div>
+    <div class="step act"><div class="num">27</div><h3>Boss fight · Legacy Dashboard</h3><div class="row"><b>You</b><span><kbd>Space</kbd> 4 times, one hit per thing moved off it. The last chunk stays standing: "what's next".</span></div></div>
+    <div class="step act"><div class="num">28</div><h3>Final scoreboard</h3><div class="row"><b>Room sees</b><span>Top 3 podium, ranks 4–10, tasks retired, Tool of the year, total points and badges.</span></div><div class="row"><b>Phones</b><span>Switch on their own to each person's rank and badges.</span></div></div>
+  </section>
+
+  <section class="level">
+    <h2>If something goes wrong</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>What you see</th><th>Do this</th></tr></thead>
+        <tbody>
+          <tr><td>Arrow keys do nothing</td><td>Click once inside the deck (focus is in Meet/Zoom), or use ▶ in the presenter bar.</td></tr>
+          <tr><td>Open/Close/Reveal do nothing</td><td>Check the chip says LIVE. If it does, reopen the deck with <code>?key=…</code> once.</td></tr>
+          <tr><td>A phone is stuck on "You're all set"</td><td>Expected: it waits for you. Questions and the vote appear when you open them.</td></tr>
+          <tr><td>A phone shows an old level or name</td><td>Reload it.</td></tr>
+          <tr><td>The live AI Dev change fails</td><td>Stop the stopwatch and play the backup recording.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="warn"><b>After any rehearsal:</b> <kbd>C</kbd> → <span class="btn">Reset all</span>, or the test players stay in the real game.</p>
+  </section>
+</div>
+
+</body>
+</html>
