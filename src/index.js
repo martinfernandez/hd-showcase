@@ -166,6 +166,17 @@ export class Room extends DurableObject {
     };
   }
 
+  closeVote() {
+    const s = this.s;
+    if (!s.vote.open) return;
+    s.vote.open = false;
+    const players = Object.values(s.players);
+    const counts = Object.fromEntries(VOTE_KEYS.map((k) => [k, 0]));
+    for (const p of players) if (p.vote) counts[p.vote] += 1;
+    const winner = VOTE_KEYS.reduce((m, k) => (counts[k] > counts[m] ? k : m), VOTE_KEYS[0]);
+    if (counts[winner]) for (const p of players) if (p.vote === winner) award(p, "crowd");
+  }
+
   control(body) {
     const s = this.s;
     const players = Object.values(s.players);
@@ -199,15 +210,9 @@ export class Room extends DurableObject {
       case "openVote":
         s.vote.open = true;
         break;
-      case "closeVote": {
-        if (!s.vote.open) break;
-        s.vote.open = false;
-        const counts = Object.fromEntries(VOTE_KEYS.map((k) => [k, 0]));
-        for (const p of players) if (p.vote) counts[p.vote] += 1;
-        const winner = VOTE_KEYS.reduce((m, k) => (counts[k] > counts[m] ? k : m), VOTE_KEYS[0]);
-        if (counts[winner]) for (const p of players) if (p.vote === winner) award(p, "crowd");
+      case "closeVote":
+        this.closeVote();
         break;
-      }
       case "startT":
         s.timer = { startedAt: now, stoppedAt: null };
         break;
@@ -232,6 +237,10 @@ export class Room extends DurableObject {
         s.stepLabel = typeof body.label === "string" ? body.label.slice(0, 40) : "";
         s.stepQid = body.qid in QUESTIONS ? body.qid : null;
         if (Number.isInteger(level) && level >= 1 && level <= 6) s.level = level;
+        // Leaving a screen closes what was left open on it, so phones never stay
+        // stuck on an old vote or question (they give those priority).
+        if (s.vote.open && s.stepLabel !== "AI Dev live") this.closeVote();
+        if (s.guessOpen && s.stepQid !== s.guessOpen) s.guessOpen = null;
         break;
       }
       case "goto": {
