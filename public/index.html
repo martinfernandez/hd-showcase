@@ -138,7 +138,7 @@ html{touch-action:manipulation}
       <div style="flex:1;display:flex;flex-direction:column;padding:20px 16px 16px;gap:10px">
         <div style="font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#ff5c8a">Level 4 · AI Dev · Live vote</div>
         <div style="font-size:30px;font-weight:900;letter-spacing:-.03em;line-height:1.02">What should the AI build?</div>
-        <div style="font-size:15px;font-weight:500;color:#aab2c2;line-height:1.35">The winner gets built live on stage. Pick the winner for Crowd Whisperer.</div>
+        <div style="font-size:15px;font-weight:500;color:#aab2c2;line-height:1.35">Pick as many as you like. The most voted change gets built live on stage; picking it earns Crowd Whisperer.</div>
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
           <sc-for list="{{ vt.opts }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.on }}" style="min-height:76px;display:flex;align-items:center;gap:14px;padding:12px 14px;background:{{ o.bg }};border:2px solid {{ o.border }};color:#f4f5f8;cursor:pointer;text-align:left"><span style="width:44px;height:44px;flex:none;background:{{ o.kBg }};color:#0b0d12;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900">{{ o.k }}</span><span style="font-size:16px;font-weight:700;line-height:1.3;flex:1">{{ o.label }}</span><span style="font-size:20px;font-weight:900;color:#22d3a6">{{ o.check }}</span></button></sc-for>
         </div>
@@ -289,10 +289,10 @@ const dur=this.props.questionSeconds??30;const rem=mock?18:(this.qOpenedAt?Math.
       submit:()=>{if(!g||mock)return;this.post('/api/guess',{qid:qKey,value:+g});this.set(s=>({answered:{...s.answered,[qKey]:+g},guess:''}));}};
     const key=k=>()=>this.setState(s=>({guess:k==='⌫'?s.guess.slice(0,-1):k==='C'?'':(s.guess+k).replace(/^0+/,'').slice(0,7)}));
     const keypad=['1','2','3','4','5','6','7','8','9','C','0','⌫'].map(k=>({label:k,on:key(k),ink:/\d/.test(k)?'#f4f5f8':'#9aa3b5'}));
-    const myVote=mock&&pv==='vote'?'c':S.voted.aidev;
-    const vt={note:myVote?'Vote in · +100. Watch the bars move.':'+100 for voting',noteColor:myVote?'#22d3a6':'#ffb547',
-      opts:VOTE_OPTS.map(o=>({k:o.k.toUpperCase(),label:o.label,bg:o.k===myVote?'#10231f':'#141821',border:o.k===myVote?'#22d3a6':'#2a3242',kBg:o.k===myVote?'#22d3a6':'#7c5cff',check:o.k===myVote?'✓':'',
-        on:()=>{if(myVote||mock)return;this.post('/api/vote',{option:o.k});this.set(s=>({voted:{...s.voted,aidev:o.k}}),()=>this.award(100,null));}}))};
+    const rawVote=mock&&pv==='vote'?['c']:S.voted.aidev;const myVotes=Array.isArray(rawVote)?rawVote:(rawVote?[rawVote]:[]);const myVote=myVotes.length>0;
+    const vt={note:myVote?'Vote in · +100. Tap to add or remove options until the vote closes.':'Pick as many as you like · +100 for voting',noteColor:myVote?'#22d3a6':'#ffb547',
+      opts:VOTE_OPTS.map(o=>{const on=myVotes.includes(o.k);return {k:o.k.toUpperCase(),label:o.label,bg:on?'#10231f':'#141821',border:on?'#22d3a6':'#2a3242',kBg:on?'#22d3a6':'#7c5cff',check:on?'✓':'',
+        on:()=>{if(mock)return;const next=on?myVotes.filter(x=>x!==o.k):[...myVotes,o.k];const first=!myVotes.length&&next.length>0;this.post('/api/vote',{options:next});this.set(s=>({voted:{...s.voted,aidev:next}}),()=>{if(first)this.award(100,null);});}};})};
     const badgeGrid=Object.keys(BADGES).map(k=>({name:BADGES[k].name,color:badges.includes(k)?BADGES[k].color:'#2a3242',icon:iconURL(BADGES[k].icon,badges.includes(k)?BADGES[k].color:'#5b6477'),op:badges.includes(k)?1:.7}));
     const fr=mock?3:rank;
     const fn={rank:'#'+fr,label:fr<=3?'On the podium':fr<=10?'Top 10':'Nice run',color:fr<=3?'#7c5cff':'#f4f5f8',bank:fmt((st.hours&&st.hours.perWeek)||0),

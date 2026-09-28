@@ -49,6 +49,9 @@ function timingSafeEqual(a, b) {
   return diff === 0;
 }
 
+// A player's AI Dev vote: a list of options (older saves hold a single string).
+const votesOf = (p) => (Array.isArray(p.vote) ? p.vote : p.vote ? [p.vote] : []);
+
 const award = (p, badge) => {
   if (!p.badges.includes(badge)) p.badges.push(badge);
 };
@@ -115,7 +118,7 @@ export class Room extends DurableObject {
     const perYear = perWeek * WEEKS_PER_YEAR;
 
     const counts = Object.fromEntries(VOTE_KEYS.map((k) => [k, 0]));
-    for (const p of players) if (p.vote) counts[p.vote] += 1;
+    for (const p of players) for (const k of votesOf(p)) counts[k] += 1;
 
     const guesses = {};
     for (const qid of Object.keys(QUESTIONS)) {
@@ -150,7 +153,7 @@ export class Room extends DurableObject {
       tools: { counts: toolCounts, total: players.filter((p) => p.tool).length },
       level: s.level,
       hours: { participants, perWeek, perYear, fte: perYear / FTE_HOURS, byTask, bySector },
-      vote: { open: s.vote.open, counts, total: players.filter((p) => p.vote).length },
+      vote: { open: s.vote.open, counts, total: players.filter((p) => votesOf(p).length).length },
       guessOpen: s.guessOpen,
       guesses,
       timer: s.timer,
@@ -172,9 +175,9 @@ export class Room extends DurableObject {
     s.vote.open = false;
     const players = Object.values(s.players);
     const counts = Object.fromEntries(VOTE_KEYS.map((k) => [k, 0]));
-    for (const p of players) if (p.vote) counts[p.vote] += 1;
+    for (const p of players) for (const k of votesOf(p)) counts[k] += 1;
     const winner = VOTE_KEYS.reduce((m, k) => (counts[k] > counts[m] ? k : m), VOTE_KEYS[0]);
-    if (counts[winner]) for (const p of players) if (p.vote === winner) award(p, "crowd");
+    if (counts[winner]) for (const p of players) if (votesOf(p).includes(winner)) award(p, "crowd");
   }
 
   control(body) {
@@ -340,10 +343,16 @@ export class Room extends DurableObject {
         const p = this.player(body, true);
         if (!p) error = "join first";
         else if (!s.vote.open) error = "voting is closed";
-        else if (!VOTE_KEYS.includes(body.option)) error = "unknown option";
         else {
-          if (!p.vote) p.points += POINTS.vote;
-          p.vote = body.option;
+          // {options: [...]} (multi-select); the old {option} shape still works.
+          const picked = Array.isArray(body.options) ? body.options : [body.option];
+          const options = [...new Set(picked.filter((k) => VOTE_KEYS.includes(k)))];
+          if (votesOf(p).length) p.votedOnce = true;
+          if (options.length && !votesOf(p).length && !p.votedOnce) {
+            p.points += POINTS.vote;
+            p.votedOnce = true;
+          }
+          p.vote = options.length ? options : null;
         }
         break;
       }
