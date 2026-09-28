@@ -2,3 +2,4 @@ node_modules
 .dev.vars
 .admin_key
 .wrangler
+video/

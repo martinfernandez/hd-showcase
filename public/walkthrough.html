@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Walkthrough</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap">
+<style>
+  /* Local-only stage (excluded from deploys by .assetsignore): the deck and two
+     phones side by side, driven by a scripted game, captured into a video. */
+  html, body { margin: 0; background: #05060a; color: #f4f5f8; font-family: Inter, system-ui, sans-serif; }
+  #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #05060a; }
+  .frame { position: absolute; overflow: hidden; background: #0b0d12; border: 2px solid #232a38; }
+  .frame iframe { border: 0; transform-origin: 0 0; display: block; }
+  #deckWrap { left: 24px; top: 24px; width: 1280px; height: 720px; }
+  #deck { width: 1600px; height: 900px; transform: scale(.8); }
+  .phoneWrap { top: 60px; width: 270px; height: 585px; border-radius: 22px; border: 3px solid #2a3242; }
+  .phoneWrap iframe { width: 375px; height: 812px; transform: scale(.72); }
+  #pA { left: 1340px; } #pB { left: 1630px; }
+  .plabel { position: absolute; top: 22px; font-size: 16px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #9aa3b5; }
+  #lA { left: 1344px; } #lB { left: 1634px; }
+  #caption { position: absolute; left: 24px; top: 764px; width: 1280px; height: 292px; background: #0f1219; border: 2px solid #232a38; padding: 22px 28px; box-sizing: border-box; display: grid; grid-template-rows: auto 1fr; gap: 14px; }
+  #cHead { display: flex; align-items: baseline; gap: 18px; }
+  #cStep { font: 700 18px "JetBrains Mono", ui-monospace, monospace; color: #7c5cff; white-space: nowrap; }
+  #cTitle { font-size: 38px; font-weight: 900; letter-spacing: -.02em; line-height: 1.05; }
+  #cCols { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 24px; }
+  .col b { display: block; font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 6px; }
+  .col p { margin: 0; font-size: 19px; line-height: 1.35; color: #d5d9e3; }
+  #cDo b { color: #ffb547; } #cRoom b { color: #22d3a6; } #cPhones b { color: #9d86ff; }
+  #cDo p { color: #f4f5f8; font-weight: 700; }
+  #side { position: absolute; left: 1340px; top: 668px; width: 556px; height: 388px; background: #0f1219; border: 2px solid #232a38; padding: 18px 22px; box-sizing: border-box; }
+  #side b { font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #9aa3b5; }
+  #log { margin: 10px 0 0; padding: 0; list-style: none; font: 700 15px/1.55 "JetBrains Mono", ui-monospace, monospace; color: #aab2c2; }
+  #log li:last-child { color: #ffb547; }
+  #marks { position: absolute; inset: 0; pointer-events: none; z-index: 10; }
+  .mk { position: absolute; border: 3px solid #ffb547; box-shadow: 0 0 0 4px rgba(255,181,71,.25), 0 0 24px rgba(255,181,71,.45); border-radius: 6px; }
+  .mk i { position: absolute; left: -14px; top: -14px; width: 26px; height: 26px; border-radius: 50%; background: #ffb547; color: #0b0d12; font: 900 14px/26px Inter, sans-serif; text-align: center; font-style: normal; }
+  .mk b { position: absolute; left: 0; bottom: calc(100% + 6px); white-space: nowrap; background: #ffb547; color: #0b0d12; font: 800 13px/1 Inter, sans-serif; padding: 5px 8px; border-radius: 4px; }
+  .mk.below b { bottom: auto; top: calc(100% + 6px); }
+  .kbd { position: absolute; left: 40px; top: 640px; display: flex; gap: 10px; align-items: center; background: rgba(15,18,25,.92); border: 3px solid #ffb547; padding: 10px 16px; border-radius: 10px; font: 800 18px Inter, sans-serif; color: #f4f5f8; }
+  .kbd kbd { font: 900 26px "JetBrains Mono", monospace; background: #ffb547; color: #0b0d12; padding: 2px 12px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="frame" id="deckWrap"><iframe id="deck" title="Projector deck"></iframe></div>
+  <div class="plabel" id="lA">Teléfono · Ana</div>
+  <div class="plabel" id="lB">Teléfono · Ben</div>
+  <div class="frame phoneWrap" id="pA"><iframe id="phoneA" title="Phone A"></iframe></div>
+  <div class="frame phoneWrap" id="pB"><iframe id="phoneB" title="Phone B"></iframe></div>
+  <div id="caption">
+    <div id="cHead"><span id="cStep"></span><span id="cTitle"></span></div>
+    <div id="cCols">
+      <div class="col" id="cDo"><b>Vos (laptop)</b><p></p></div>
+      <div class="col" id="cRoom"><b>La sala ve</b><p></p></div>
+      <div class="col" id="cPhones"><b>Teléfonos</b><p></p></div>
+    </div>
+  </div>
+  <div id="side"><b>Acciones</b><ul id="log"></ul></div>
+  <div id="marks"></div>
+</div>
+<script>
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const KEY = new URLSearchParams(location.search).get("key") || "";
+const $ = (id) => document.getElementById(id);
+const deckWin = () => $("deck").contentWindow;
+const D = () => deckWin().__dcComponent;
+const phone = (w) => $(w === "A" ? "phoneA" : "phoneB").contentWindow;
+const P = (w) => phone(w).__dcComponent;
+
+let markN = 0;
+function clearMarks() { $("marks").innerHTML = ""; markN = 0; }
+function clearClickMarks() { $("marks").querySelectorAll(".mk").forEach((m) => m.remove()); }
+// The recorder exposes window.snapFrame; without it the walkthrough still plays.
+async function snap() { if (window.snapFrame) await window.snapFrame(1600); }
+// Draw a numbered box over an element inside one of the iframes, in stage coordinates.
+function mark(frameId, el, label) {
+  const f = $(frameId).getBoundingClientRect();
+  const scale = frameId === "deck" ? 0.8 : 0.72;
+  const r = el.getBoundingClientRect();
+  const st = $("stage").getBoundingClientRect();
+  const box = document.createElement("div");
+  box.className = "mk" + (r.top * scale < 40 ? " below" : "");
+  box.style.left = (f.left - st.left + r.left * scale - 3) + "px";
+  box.style.top = (f.top - st.top + r.top * scale - 3) + "px";
+  box.style.width = (r.width * scale + 6) + "px";
+  box.style.height = (r.height * scale + 6) + "px";
+  markN += 1;
+  box.innerHTML = `<i>${markN}</i>` + (label ? `<b>${label}</b>` : "");
+  $("marks").appendChild(box);
+}
+function keyMark(keys, note) {
+  const k = document.createElement("div");
+  k.className = "kbd";
+  k.innerHTML = keys.map((x) => `<kbd>${x}</kbd>`).join("") + `<span>${note}</span>`;
+  $("marks").appendChild(k);
+}
+function log(line) {
+  const li = document.createElement("li");
+  li.textContent = line;
+  $("log").appendChild(li);
+  while ($("log").children.length > 12) $("log").firstChild.remove();
+}
+function caption(step, title, doText, room, phones) {
+  $("cStep").textContent = step;
+  $("cTitle").textContent = title;
+  $("cDo").querySelector("p").textContent = doText;
+  $("cRoom").querySelector("p").textContent = room;
+  $("cPhones").querySelector("p").textContent = phones;
+}
+const btnIn = (win, text) => { const all = [...win.document.querySelectorAll("button")]; return all.find((b) => b.textContent.trim() === text) || all.find((b) => b.textContent.includes(text)); };
+async function tap(w, text, label = text, show = true) {
+  const b = btnIn(phone(w), text);
+  if (!b) throw new Error(`phone ${w}: no button "${text}"`);
+  if (show) { clearClickMarks(); mark(w === "A" ? "phoneA" : "phoneB", b, label); await snap(); }
+  b.click();
+  await sleep(250);
+}
+async function clearPop(w) { P(w).setState({ pop: null }); await sleep(120); }
+async function type(w, value) {
+  const inp = phone(w).document.querySelector("input");
+  clearClickMarks(); mark(w === "A" ? "phoneA" : "phoneB", inp, "Nombre: " + value); await snap();
+  inp.value = value;
+  inp.dispatchEvent(new Event("input", { bubbles: true }));
+  await sleep(150);
+}
+async function keypad(w, digits) {
+  for (const d of String(digits)) { await tap(w, d, "", false); }
+  await tap(w, "Lock in guess", "Teclado " + digits + " → Lock in guess");
+}
+async function bar(open) { D().setState({ ctl: open }); await sleep(250); }
+async function barBtn(label, i = 0) {
+  const b = [...deckWin().document.querySelectorAll("button")].filter((x) => x.textContent.trim() === label)[i];
+  if (!b) throw new Error(`deck: no button "${label}"`);
+  const grp = b.parentElement && b.parentElement.firstElementChild ? b.parentElement.firstElementChild.textContent.trim() : "";
+  clearClickMarks(); mark("deck", b, (grp && grp !== label ? grp + " · " : "") + label); await snap();
+  b.click();
+  await sleep(300);
+}
+async function go(i, keys = ["→"]) { D().setState({ ctl: false }); D().goTo(i); keyMark(keys, "flecha derecha en el deck"); await sleep(400); }
+
+// Each step: [stepLabel, title, you, room, phones, action, settleMs]
+const STEPS = [
+  ["Antes", "Preparación: Reset all", "C → Reset all. Deck en la portada, chip LIVE abajo a la derecha.", "La portada con el QR y el contador de jugadores en 0.", "Los que abran el QR ven \"Join the game\".",
+    async () => { await bar(true); keyMark(["C"], "abre la barra del presentador"); const rb = [...deckWin().document.querySelectorAll("button")].find((x) => x.textContent.trim() === "Reset all"); if (rb) { mark("deck", rb, "Reset all"); await snap(); } D().control("reset"); await sleep(600); log("C → Reset all"); }, 2500],
+  ["Paso 1/28", "La gente se une", "Nada. Leés el texto de arranque mientras escanean.", "El contador \"players in\" sube.", "Nombre + avatar → Join game (+100, Early Bird).",
+    async () => { await type("A", "Ana"); await tap("A", "Join game"); await type("B", "Ben"); await tap("B", "Join game"); log("Ana y Ben se unen"); }, 2600],
+  ["Paso 1/28", "Misión 1: trabajo manual que no extrañan", "Nada. Esperás 1–2 minutos.", "La barra \"Tasks retired\" de abajo empieza a llenarse.", "Eligen departamento y tildan tareas (+200). Planillas = Spreadsheet Slayer.",
+    async () => {
+      await clearPop("A"); await clearPop("B");
+      await tap("A", "Which manual work"); await tap("A", "Digital PR"); await tap("A", "Updating PR tracking sheets"); await tap("A", "Building PR reports");
+      await tap("B", "Which manual work"); await tap("B", "Content"); await tap("B", "Writing first drafts"); await tap("B", "Revision rounds");
+      log("Ana: Digital PR · Ben: Content");
+    }, 900],
+  ["Paso 1/28", "Enviar tareas", "Nada.", "La barra sube con cada tarea.", "Retire these tasks → +200 y el pop-up de medalla.",
+    async () => { await tap("A", "Retire these tasks"); await tap("B", "Retire these tasks"); log("Tareas enviadas"); }, 1800],
+  ["Paso 1/28", "Misión 2: Tool of the year", "Nada.", "\"Top tool\" abajo muestra quién va ganando.", "Eligen una herramienta → Cast my vote (+100).",
+    async () => {
+      await sleep(900); await clearPop("A"); await clearPop("B");
+      await tap("A", "Tool of the year"); await tap("A", "AI DEV"); await tap("A", "Cast my vote");
+      await tap("B", "Tool of the year"); await tap("B", "AI Writer"); await tap("B", "Cast my vote");
+      log("Votos: AI DEV, AI Writer");
+    }, 2400],
+  ["Paso 1/28", "Todos listos: esperan al presentador", "Cuando la mayoría terminó, avanzás con →.", "Tareas retiradas y Top tool en la barra.", "\"You're all set\": el teléfono espera. Es normal.",
+    async () => { await clearPop("A"); await clearPop("B"); }, 1600],
+  ["Paso 2/28", "Mapa de niveles", "→", "Cinco niveles; el 1 \"Now playing\".", "\"Now playing: Level 1 · Taulant\".",
+    async () => { await go(1); log("→ mapa"); }, 1800],
+  ["Paso 3–4/28", "Nivel 1: Taulant", "→ → (intro y power-ups). Taulant presenta.", "Las cartas de power-ups del nivel.", "Nada que hacer.",
+    async () => { await go(3); log("→ → power-ups nivel 1"); }, 1800],
+  ["Paso 5/28", "Pregunta 1: abrir", "C → Question · Open", "La pregunta y un círculo de 30 segundos.", "Pasan solos a la pregunta con teclado.",
+    async () => { await go(4); await bar(true); await barBtn("Open", 0); log("C → Question · Open"); }, 2600],
+  ["Paso 5/28", "Pregunta 1: responden", "Esperás. \"Answers in\" sube.", "Respuestas y mediana en vivo.", "Tipean su número → Lock in guess.",
+    async () => { await keypad("A", "1900"); await keypad("B", "1500"); log("Ana 1900 · Ben 1500"); }, 2200],
+  ["Paso 5/28", "Pregunta 1: cerrar", "Question · Close", "\"Answers locked · reveal next\".", "\"Locked in\" con su número.",
+    async () => { await barBtn("Close", 0); log("Question · Close"); }, 1800],
+  ["Paso 6/28", "Revelación", "→ y después Question · Reveal", "El número real sube y aparece el podio con puntos.", "Suben los puntos; el más cercano gana Oracle.",
+    async () => { await go(5); await bar(true); await barBtn("Reveal"); log("→ · Question · Reveal"); }, 3200],
+  ["Paso 7–12/28", "Niveles 2 y 3", "→ por cada pantalla. Abenezer, después Hikmat.", "Mapa, intro y power-ups de cada nivel.", "\"Now playing\" cambia solo.",
+    async () => { await go(9); log("→ … nivel 3"); }, 2000],
+  ["Paso 13–14/28", "Pregunta 2: Lead Center", "Open → esperás → Close → → → Reveal", "Igual que la pregunta 1.", "Responden con el teclado.",
+    async () => { await go(12); await bar(true); await barBtn("Open", 0); await sleep(1800); await keypad("A", "50000"); await keypad("B", "80000"); await sleep(1600); await barBtn("Close", 0); await go(13); await bar(true); await barBtn("Reveal"); log("Pregunta 2 revelada"); }, 3200],
+  ["Paso 19/28", "AI Dev: votación", "→ hasta AI Dev. Vote · Open", "Barras de votos A–D en vivo.", "Eligen el cambio que construye la IA (+100).",
+    async () => { await go(18); await bar(true); await barBtn("Open", 1); await sleep(1800); await tap("A", "FAQ section"); await tap("B", "FAQ section"); log("Vote · Open · votan FAQ"); }, 2400],
+  ["Paso 19/28", "AI Dev: cronómetro", "Vote · Close, y Stopwatch · Start cuando Roma/Blin mandan el Slack", "El cambio ganador y el cronómetro gigante.", "Los que votaron al ganador: Crowd Whisperer.",
+    async () => { await barBtn("Close", 1); await barBtn("Start"); log("Vote · Close · Stopwatch · Start"); }, 3500],
+  ["Paso 19/28", "AI Dev: PR listo", "Stopwatch · Stop cuando existe el PR", "\"Pull request opened\" y el tiempo final.", "Nada que hacer.",
+    async () => { await bar(true); await barBtn("Stop"); log("Stopwatch · Stop"); }, 1800],
+  ["Paso 20–21/28", "Pregunta 3: PRs de AI DEV", "Open → Close → → → Reveal", "La revelación y el podio.", "Quien respondió las 3: Full Run.",
+    async () => { await go(19); await bar(true); await barBtn("Open", 0); await sleep(1800); await keypad("A", "900"); await keypad("B", "600"); await sleep(1600); await barBtn("Close", 0); await go(20); await bar(true); await barBtn("Reveal"); log("Pregunta 3 revelada"); }, 3200],
+  ["Paso 25/28", "Pain removed", "→ hasta Pain removed. Lo contás vos.", "Tareas retiradas, Tool of the year y departamentos.", "Nada que hacer.",
+    async () => { await go(24); log("→ Pain removed"); }, 2800],
+  ["Paso 26/28", "Quality Shield", "Espacio, una vez por cada control (hasta 8)", "Se enciende un segmento del escudo con sus números.", "Nada que hacer.",
+    async () => { await go(25); keyMark(["Espacio", "×3"], "un control por vez"); for (let i = 0; i < 3; i++) { deckWin().dispatchEvent(new KeyboardEvent("keydown", { key: " " })); await sleep(250); } log("Espacio × 3"); }, 1800],
+  ["Paso 27/28", "Boss fight", "Espacio 4 veces: un golpe por cada cosa migrada", "La vida del Legacy Dashboard baja; queda \"what's next\".", "Nada que hacer.",
+    async () => { await go(26); keyMark(["Espacio", "×4"], "un golpe por vez"); for (let i = 0; i < 4; i++) { deckWin().dispatchEvent(new KeyboardEvent("keydown", { key: " " })); await sleep(250); } log("Espacio × 4"); }, 2000],
+  ["Paso 28/28", "Final", "→ y listo", "Podio, tareas retiradas y Tool of the year.", "Cada uno ve su puesto y sus medallas.",
+    async () => { await go(27); log("→ Final"); }, 3200],
+];
+
+let idx = -1;
+// Local only: on any other host this page would play the real game.
+const LOCAL = ["localhost", "127.0.0.1"].includes(location.hostname);
+if (!LOCAL) document.body.innerHTML = "<p style=\"padding:40px\">This walkthrough only runs on a local dev server.</p>";
+window.walk = LOCAL && {
+  total: STEPS.length,
+  async start() {
+    for (const k of Object.keys(localStorage)) if (k.startsWith("hd-")) localStorage.removeItem(k);
+    if (KEY) localStorage.setItem("adminKey", KEY);
+    await fetch("/api/control", { method: "POST", headers: { "content-type": "application/json", "x-admin-key": KEY }, body: JSON.stringify({ action: "reset" }) });
+    $("deck").src = "/deck";
+    $("phoneA").src = "/?p=A";
+    $("phoneB").src = "/?p=B";
+    await sleep(3500);
+    D().goTo(0);
+    await sleep(800);
+    return "ready";
+  },
+  async next() {
+    idx += 1;
+    const [step, title, you, room, phones, run, settle] = STEPS[idx];
+    clearMarks();
+    caption(step, title, you, room, phones);
+    await run();
+    await sleep(settle);
+    clearClickMarks();
+    return { idx, title, done: idx === STEPS.length - 1 };
+  },
+};
+</script>
+</body>
+</html>

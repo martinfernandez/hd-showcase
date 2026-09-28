@@ -48,7 +48,7 @@ html{touch-action:manipulation}
       <div style="flex:1;display:flex;flex-direction:column;padding:28px 20px 20px">
         <div style="display:flex;align-items:center;gap:10px"><div style="width:10px;height:10px;background:#7c5cff"></div><div style="font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#22d3a6">Systems · Year in levels</div></div>
         <div style="font-size:48px;font-weight:900;line-height:.95;letter-spacing:-.04em;margin-top:24px">Join the game.</div>
-        <div style="font-size:16px;font-weight:500;color:#aab2c2;margin-top:12px;line-height:1.4">Guess, vote and report the hours you got back. The top 10 make the final podium.</div>
+        <div style="font-size:16px;font-weight:500;color:#aab2c2;margin-top:12px;line-height:1.4">Guess, vote and tell us which manual work you don't miss. The top 10 make the final podium.</div>
         <div style="margin-top:32px;display:flex;gap:16px;align-items:center">
           <button onClick="{{ join.reroll }}" aria-label="Shuffle avatar" style="width:88px;height:88px;background:{{ join.color }};border:none;font-size:44px;font-weight:900;color:#0b0d12;cursor:pointer;flex:none">{{ join.glyph }}</button>
           <div><div style="font-size:16px;font-weight:800">Your avatar</div><div style="font-size:14px;font-weight:500;color:#9aa3b5;margin-top:4px">Picked for you. Tap to shuffle.</div></div>
@@ -191,6 +191,8 @@ html{touch-action:manipulation}
 <script src="/dc-runtime.js"></script>
 <script>
 const PREVIEW = new URLSearchParams(location.search).has("preview");
+// ?p=<name> gives this tab its own player (used by the local walkthrough to run two phones side by side).
+const PLAYER_KEY = "hd-player" + (new URLSearchParams(location.search).get("p") ? "-" + new URLSearchParams(location.search).get("p").replace(/[^A-Za-z0-9]/g, "") : "");
 const PROPS = { previewState: "live", questionSeconds: 30, weeksPerYear: 48 };
 
 const SECTORS=['SEO','Content','Web/WordPress','Digital PR','Link Building','Local/GBP','Paid Media','Account Management'];
@@ -225,18 +227,18 @@ const MOCK={me:{id:'demo',name:'Dana',avatar:'a2'},points:1300,badges:['early','
 class Component extends DCLogic {
   state={me:null,st:null,view:'home',sector:null,tasks:{},rateSector:null,rating:null,guess:'',answered:{},voted:{},hoursDone:false,hoursWeek:0,rateDone:false,points:0,badges:[],pop:null,avatarIdx:Math.floor(Math.random()*8),name:'',preview:null,wide:false,now:Date.now()};
   componentDidMount(){
-    try{const sv=JSON.parse(localStorage.getItem('hd-player')||'null');if(sv)this.setState(sv);}catch(e){}
+    try{const sv=JSON.parse(localStorage.getItem(PLAYER_KEY)||'null');if(sv)this.setState(sv);}catch(e){}
     this.onResize=()=>this.setState({wide:PREVIEW&&innerWidth>600});this.onResize();addEventListener('resize',this.onResize);
     this._skip=0;this.poll();this._poll=setInterval(()=>this.poll(),1500);this._tick=setInterval(()=>{if(this.state.st&&this.state.st.guessOpen)this.setState({now:Date.now()});},250);
   }
   componentWillUnmount(){removeEventListener('resize',this.onResize);clearInterval(this._poll);clearInterval(this._tick);}
-  persist(){const {me,sector,tasks,rateSector,rating,answered,voted,hoursDone,hoursWeek,rateDone,points,badges,epoch,tool}=this.state;try{localStorage.setItem('hd-player',JSON.stringify({me,sector,tasks,rateSector,rating,answered,voted,hoursDone,hoursWeek,rateDone,points,badges,epoch,tool}));}catch(e){}}
+  persist(){const {me,sector,tasks,rateSector,rating,answered,voted,hoursDone,hoursWeek,rateDone,points,badges,epoch,tool}=this.state;try{localStorage.setItem(PLAYER_KEY,JSON.stringify({me,sector,tasks,rateSector,rating,answered,voted,hoursDone,hoursWeek,rateDone,points,badges,epoch,tool}));}catch(e){}}
   set(o,cb){this.setState(o,()=>{this.persist();cb&&cb();});}
   async poll(){
     if(this._skip<=0){try{const r=await fetch(this.props.apiUrl||'/api/state',{cache:'no-store'});if(r.ok){const j=await r.json();if(j&&j.hours){this.live=true;this.ingest(j);return;}}}catch(e){}}
     this._skip--;if(!this.state.st)this.ingest({hours:{perYear:2140,participants:18},vote:{open:false,counts:{},total:0},guessOpen:null,guesses:{},timer:{},players:[],level:2});
   }
-  ingest(j){if(j.epoch&&this.state.epoch!==j.epoch){if(this.state.epoch){try{localStorage.removeItem('hd-player');}catch(e){}this.setState({me:null,sector:null,tasks:{},rateSector:null,rating:null,guess:'',answered:{},voted:{},hoursDone:false,hoursWeek:0,rateDone:false,points:0,badges:[],view:'home',tool:null});}this.set({epoch:j.epoch});}const prev=this.state.st;if(j.guessOpen&&!(prev&&prev.guessOpen))this.qOpenedAt=Date.now();
+  ingest(j){if(j.epoch&&this.state.epoch!==j.epoch){if(this.state.epoch){try{localStorage.removeItem(PLAYER_KEY);}catch(e){}this.setState({me:null,sector:null,tasks:{},rateSector:null,rating:null,guess:'',answered:{},voted:{},hoursDone:false,hoursWeek:0,rateDone:false,points:0,badges:[],view:'home',tool:null});}this.set({epoch:j.epoch});}const prev=this.state.st;if(j.guessOpen&&!(prev&&prev.guessOpen))this.qOpenedAt=Date.now();
     const me=this.state.me;if(me&&j.players){const p=j.players.find(p=>p.id?p.id===me.id:p.name===me.name);if(p){const nb=(p.badges||[]).map(badgeKey);const fresh=nb.filter(b=>!this.state.badges.includes(b)&&BADGES[b]);if(fresh.length)this.showPop(fresh[0]);this.set({badges:nb,points:p.points||this.state.points});}}
     this.setState({st:j,now:Date.now()});}
   post(path,body,tries=3){const payload=JSON.stringify({id:this.state.me&&this.state.me.id,name:this.state.me&&this.state.me.name,...body});const retry=()=>{if(tries>1)setTimeout(()=>this.post(path,body,tries-1),1500);};fetch(path,{method:'POST',headers:{'content-type':'application/json'},body:payload}).then(r=>{if(!r.ok&&r.status!==400)retry();}).catch(retry);}
