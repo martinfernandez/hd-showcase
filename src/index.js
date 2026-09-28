@@ -17,6 +17,11 @@ const EMPTY = () => ({
   guessOpen: null,
   reveals: {}, // qid -> actual
   timer: { startedAt: null, stoppedAt: null },
+  // Where the projector deck is, as it reports it, and the last order from /remote.
+  step: 0,
+  stepLabel: "Title",
+  stepQid: null,
+  cmd: { seq: 0 },
 });
 
 const json = (data, status = 200) =>
@@ -149,6 +154,10 @@ export class Room extends DurableObject {
       guessOpen: s.guessOpen,
       guesses,
       timer: s.timer,
+      step: s.step || 0,
+      stepLabel: s.stepLabel || "Title",
+      stepQid: s.stepQid || null,
+      cmd: s.cmd || { seq: 0 },
       players: players
         .map(({ id, name, avatar, points, badges }) => ({ id, name, avatar, points, badges }))
         .sort((a, b) => b.points - a.points),
@@ -212,6 +221,30 @@ export class Room extends DurableObject {
         const level = Number(body.level);
         if (!Number.isInteger(level) || level < 1 || level > 6) return "level must be 1–6";
         s.level = level;
+        break;
+      }
+      case "step": {
+        // The deck reports where it is; this also keeps phones on the right level.
+        const step = Number(body.step);
+        const level = Number(body.level);
+        if (!Number.isInteger(step) || step < 0 || step > 60) return "bad step";
+        s.step = step;
+        s.stepLabel = typeof body.label === "string" ? body.label.slice(0, 40) : "";
+        s.stepQid = body.qid in QUESTIONS ? body.qid : null;
+        if (Number.isInteger(level) && level >= 1 && level <= 6) s.level = level;
+        break;
+      }
+      case "goto": {
+        const step = Number(body.step);
+        if (!Number.isInteger(step) || step < 0 || step > 60) return "bad step";
+        s.cmd = { seq: ((s.cmd && s.cmd.seq) || 0) + 1, kind: "goto", value: step };
+        // Optimistic: the remote sees the new step at once; the deck confirms when it gets there.
+        s.step = step;
+        break;
+      }
+      case "beat": {
+        const d = Number(body.d) === -1 ? -1 : 1;
+        s.cmd = { seq: ((s.cmd && s.cmd.seq) || 0) + 1, kind: "beat", value: d };
         break;
       }
       case "reset":
