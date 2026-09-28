@@ -27,8 +27,9 @@ Object `Room` (SQLite-backed) holding the whole game as one JSON document. Every
   `/api/vote`, `/api/guess`, `/api/rate`) and presenter actions on `POST /api/control`
   (needs header `x-admin-key`).
 - `src/config.js`: departments, vote keys, Tool of the year ids, **quiz answers**, points.
-- `src/impact.js`: numbers for the Client impact and Quality Shield screens. `null` renders
-  as an amber `[FILL]` box. **Never invent a number**: leave it null until it has a source.
+- `src/impact.js`: numbers for the Client impact and Quality Shield screens. `null` values are
+  hidden (a client panel with no data at all is dropped; one without `before` shows only "Now";
+  Quality metrics without a number are omitted). **Never invent a number**: leave it null until it has a source.
 - `public/dc-runtime.js`: tiny runtime for the Claude Design template syntax (`{{ }}`,
   `<sc-if>`, `<sc-for>`, `onClick`), rendered with `public/morphdom.js`. Each page keeps a
   `class Component extends DCLogic` with `renderVals()`; `window.__dcComponent` is exposed
